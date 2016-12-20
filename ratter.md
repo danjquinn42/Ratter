@@ -33,7 +33,7 @@ This project will be implemented with the following technologies:
 - `Phaser.js` with `HTML5 Canvas` for DOM manipulation and rendering,
 - Webpack to bundle and serve up the various scripts.
 
-In addition to the webpack entry file, the following scripts will be involved in the project:
+In addition to the webpack entry file, the following files will be involved in the project:
 
 `sprites.png`: the sprite file will include pixle art of the street, the sidewalk, dumpsters, the rat facing four directions, angry New Yorkers with multiple frames for walking, busses, and cars.
 
