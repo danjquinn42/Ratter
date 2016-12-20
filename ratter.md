@@ -35,9 +35,15 @@ This project will be implemented with the following technologies:
 
 In addition to the webpack entry file, the following scripts will be involved in the project:
 
+`sprites.png`: the sprite file will include pixle art of the street, the sidewalk, dumpsters, the rat facing four directions, angry New Yorkers with multiple frames for walking, busses, and cars. 
+
 `street.js`: this script will handle the logic for creating and updating the necessary `Easel.js` elements and rendering them to the DOM.
 
 `obstical.js`: obstacle objects will include both pedestrians and vehicles.
+
+`reward.js`: the rewards class will include all items which result in bonus points for the rat.
+
+`rat.js` : the rat object will listen for key events and control the players avatar on screen.
 
 `ratter.js`: this script will handle the logic behind the scenes.  A ratter object will hold a street, a rat, and many vehicle and pedestrian objects.
 
