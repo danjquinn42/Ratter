@@ -10,28 +10,22 @@ Ratter is very similar. You play as a rat starting your journey in central park 
 
 ### Functionality & MVP
 
-With this Conway's Game of Life simulator, users will be able to:
+In Ratter the user will be able to
 
-- [ ] Start, pause, and reset the game board
-- [ ] Select squares to be alive in the initial state
-- [ ] Choose from preset demo initial states
-- [ ] Toggle between square, triangular and hexagonal grids with corresponding rule sets
+- [ ] Scurry Forward
+- [ ] Scurry Left
+- [ ] Scurry Right
+- [ ] Scurry Backward
 
-In addition, this project will include:
+These actions will help the user achieve the primary objectives of the game:
 
-- [ ] An About modal describing the background and rules of the game
-- [ ] A production README
+- [ ] Avoid cars and trucks
+- [ ] Avoid angry New Yorkers
+- [ ] Collect Pizza
+- [ ] Reach the glorious dumpster
 
-### Wireframes
-
-This app will consist of a single screen with game board, game controls, and nav links to the Github, my LinkedIn,
-and the About modal.  Game controls will include Start, Stop, and Reset buttons as well as a slider to control the speed.  On the left, three clickable shapes will be used to toggle between the types of grids available.  On the right, there will be three (or more) clickable gradient-filled rectangles used to toggle between color schemes (see Bonus Features).  Additionally, a drop-down will be added to the Controls to toggle between different rule sets (again, see Bonus Features).
-
-![wireframes](https://github.com/appacademy/ny-portfolio-curriculum/blob/master/javascript-project/js-proposal-wireframe.jpg)
 
 ### Architecture and Technologies
-
-**NB**: one of the main things you should be researching and deciding upon while you write this proposal is what technologies you plan to use.  Identify and create a plan of attack for the major technical challenges in your project.  It's okay if you don't have all the details of implementation fleshed out, but you should have a solid roadmap by Monday morning.
 
 This project will be implemented with the following technologies:
 
@@ -39,11 +33,13 @@ This project will be implemented with the following technologies:
 - `Easel.js` with `HTML5 Canvas` for DOM manipulation and rendering,
 - Webpack to bundle and serve up the various scripts.
 
-In addition to the webpack entry file, there will be three scripts involved in this project:
+In addition to the webpack entry file, the following scripts will be involved in the project:
 
-`board.js`: this script will handle the logic for creating and updating the necessary `Easel.js` elements and rendering them to the DOM.
+`street.js`: this script will handle the logic for creating and updating the necessary `Easel.js` elements and rendering them to the DOM.
 
-`automata.js`: this script will handle the logic behind the scenes.  An Automata object will hold a `type` (hexagon, triangle, or square) and a 2D array of `Cell`s.  It will be responsible for doing neighbor checks for each `Cell` upon iteration and updating the `Cell` array appropriately.
+`obstical.js`: obstacle objects will include both pedestrians and vehicles.
+
+`ratter.js`: this script will handle the logic behind the scenes.  A ratter object will hold a street, a rat, and many vehicle and pedestrian objects.
 
 `cell.js`: this lightweight script will house the constructor and update functions for the `Cell` objects.  Each `Cell` will contain a `type` (hexagon, triangle, or square) and an `aliveState` (`true` or `false`).
 
