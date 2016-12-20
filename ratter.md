@@ -29,15 +29,15 @@ These actions will help the user achieve the primary objectives of the game:
 
 This project will be implemented with the following technologies:
 
-- Vanilla JavaScript and `jQuery` for overall structure and game logic,
-- `Easel.js` with `HTML5 Canvas` for DOM manipulation and rendering,
+- Vanilla JavaScript for overall structure and game logic,
+- `Phaser.js` with `HTML5 Canvas` for DOM manipulation and rendering,
 - Webpack to bundle and serve up the various scripts.
 
 In addition to the webpack entry file, the following scripts will be involved in the project:
 
 `sprites.png`: the sprite file will include pixle art of the street, the sidewalk, dumpsters, the rat facing four directions, angry New Yorkers with multiple frames for walking, busses, and cars.
 
-`street.js`: this script will handle the logic for creating and updating the necessary `Easel.js` elements and rendering them to the DOM.
+`street.js`: this script will handle the logic for creating and updating the necessary `Phaser.js` elements and rendering them to the DOM.
 
 `obstical.js`: obstacle objects will include both pedestrians and vehicles.
 
@@ -51,16 +51,16 @@ In addition to the webpack entry file, the following scripts will be involved in
 
 ### Implementation Timeline
 
-**Day 1**: Setup all necessary Node modules, including getting webpack up and running and `Easel.js` installed.  Create `webpack.config.js` as well as `package.json`.  Write a basic entry file and the bare bones of all 3 scripts outlined above.  Learn the basics of `Easel.js`. Create Sprites. Goals for the day:
+**Day 1**: Setup all necessary Node modules, including getting webpack up and running and `Phaser.js` installed.  Create `webpack.config.js` as well as `package.json`.  Write a basic entry file and the bare bones of all 3 scripts outlined above.  Learn the basics of `Phaser.js`. Create Sprites. Goals for the day:
 
 - Get a green bundle with `webpack`
 - Complete pixel artwork and learn how to sample sprites from a single file.
-- Learn enough `Easel.js` to render an object to the `Canvas` element
+- Learn enough `Phaser.js` to render an object to the `Canvas` element
 
-**Day 2**: Dedicate this day to learning the `Easel.js` API.  First, build out the `Rat` object to connect to the `Street` object.  Then, use `street.js` to create and render at least a blank street map with the rat scurrying according to input from the user.
+**Day 2**: Dedicate this day to learning the `Phaser.js` API.  First, build out the `Rat` object to connect to the `Street` object.  Then, use `street.js` to create and render at least a blank street map with the rat scurrying according to input from the user.
 
 - Complete the `rat.js` module (constructor, update functions)
-- Render the street to the `Canvas` using `Easel.js`
+- Render the street to the `Canvas` using `Phaser.js`
 - Make the rat responsive to keyboard input, scurrying regular distances up, down, left, and right.
 
 **Day 3**: Create Obstacle class in the `obstacle.js` file and add hit-detection in the `street.js` file. Render the obstacles moving on the street. Make sure the game ends when the rat hits an obstacle. Add walking animation to pedestrians if time permits.
