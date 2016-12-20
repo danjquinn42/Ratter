@@ -35,7 +35,7 @@ This project will be implemented with the following technologies:
 
 In addition to the webpack entry file, the following scripts will be involved in the project:
 
-`sprites.png`: the sprite file will include pixle art of the street, the sidewalk, dumpsters, the rat facing four directions, angry New Yorkers with multiple frames for walking, busses, and cars. 
+`sprites.png`: the sprite file will include pixle art of the street, the sidewalk, dumpsters, the rat facing four directions, angry New Yorkers with multiple frames for walking, busses, and cars.
 
 `street.js`: this script will handle the logic for creating and updating the necessary `Easel.js` elements and rendering them to the DOM.
 
@@ -51,35 +51,31 @@ In addition to the webpack entry file, the following scripts will be involved in
 
 ### Implementation Timeline
 
-**Day 1**: Setup all necessary Node modules, including getting webpack up and running and `Easel.js` installed.  Create `webpack.config.js` as well as `package.json`.  Write a basic entry file and the bare bones of all 3 scripts outlined above.  Learn the basics of `Easel.js`.  Goals for the day:
+**Day 1**: Setup all necessary Node modules, including getting webpack up and running and `Easel.js` installed.  Create `webpack.config.js` as well as `package.json`.  Write a basic entry file and the bare bones of all 3 scripts outlined above.  Learn the basics of `Easel.js`. Create Sprites. Goals for the day:
 
 - Get a green bundle with `webpack`
+- Complete pixel artwork and learn how to sample sprites from a single file.
 - Learn enough `Easel.js` to render an object to the `Canvas` element
 
-**Day 2**: Dedicate this day to learning the `Easel.js` API.  First, build out the `Cell` object to connect to the `Board` object.  Then, use `board.js` to create and render at least the square grid, ideally all 3 grid types.  Build in the ability to toggle the live/dead states on click for each cell.  Goals for the day:
+**Day 2**: Dedicate this day to learning the `Easel.js` API.  First, build out the `Rat` object to connect to the `Street` object.  Then, use `street.js` to create and render at least a blank street map with the rat scurrying according to input from the user.
 
-- Complete the `cell.js` module (constructor, update functions)
-- Render a square grid to the `Canvas` using `Easel.js`
-- Make each cell in the grid clickable, toggling the state of the square on click
-- Do the same for triangular and hexagonal grids
+- Complete the `rat.js` module (constructor, update functions)
+- Render the street to the `Canvas` using `Easel.js`
+- Make the rat responsive to keyboard input, scurrying regular distances up, down, left, and right.
 
-**Day 3**: Create the automata logic backend.  Build out modular functions for handling the different grid types along with their unique neighbor checks and rule sets.  Incorporate the automata logic into the `Board.js` rendering.  Goals for the day:
-
-- Export an `Automata` object with correct type and handling logic
-- Have a functional grid on the `Canvas` frontend that correctly handles iterations from one generation of the game to the next
+**Day 3**: Create Obstacle class in the `obstacle.js` file and add hit-detection in the `street.js` file. Render the obstacles moving on the street. Make sure the game ends when the rat hits an obstacle. Add walking animation to pedestrians if time permits.
 
 
-**Day 4**: Install the controls for the user to interact with the game.  Style the frontend, making it polished and professional.  Goals for the day:
+**Day 4**: Add dumpsters and score counter. Add game over screen when the rat hits an obstacle. Add rewards appearing randomly for 5-10 seconds at a time on the street.
 
-- Create controls for game speed, stop, start, reset, and shape type
-- Have a styled `Canvas`, nice looking controls and title
-- If time: include buttons on the side to toggle the color scheme of the cells
+- Assign point values to the dumpsters and to pizza slices
+- Update the point counter when a collision is detected with Reward objects.
+- Create a new Rat object whenever the players rat reaches a dumpster.
 
 
 ### Bonus features
 
 There are many directions this cellular automata engine could eventually go.  Some anticipated updates are:
 
-- [ ] Add options for different rule sets
-- [ ] Add multiple choices for starting states that are interesting
-- [ ] Explore multi-state versions of the game, such as the ones outlined [here](https://cs.stanford.edu/people/eroberts/courses/soco/projects/2008-09/modeling-natural-systems/gameOfLife2.html)
+- [ ] Add multiple levels
+- [ ] Add high score list
