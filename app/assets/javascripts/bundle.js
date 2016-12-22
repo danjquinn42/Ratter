@@ -71,7 +71,7 @@
 	
 	  stage.addChild(rat);
 	
-	  stage.addEventListener("keydown", scurry);
+	  stage.addEventListener("keypress", scurry);
 	
 	  createjs.Ticker.timingMode = createjs.Ticker.RAF;
 	  createjs.Ticker.addEventListener("tick", tick);
