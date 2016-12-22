@@ -88,7 +88,7 @@
 	}
 	
 	function init() {
-	  const canvas = document.getElementById("demoCanvas");
+	  const canvas = document.getElementById("ratterCanvas");
 	  stage = new createjs.Stage(canvas);
 	
 	  width = stage.canvas.width;
