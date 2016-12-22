@@ -71,7 +71,7 @@
 	
 	  stage.addChild(rat);
 	
-	  stage.addEventListener("mousedown", scurry);
+	  stage.addEventListener("keydown", scurry);
 	
 	  createjs.Ticker.timingMode = createjs.Ticker.RAF;
 	  createjs.Ticker.addEventListener("tick", tick);
@@ -80,7 +80,7 @@
 	};
 	
 	function scurry() {
-	  console.log("scurry scurry scurry");
+	  debugger;
 	}
 	
 	function tick(event) {
