@@ -80,7 +80,7 @@
 	};
 	
 	function scurry() {
-	  debugger;
+	  console.log(event.target.value);
 	}
 	
 	function tick(event) {
