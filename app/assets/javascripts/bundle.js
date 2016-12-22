@@ -120,9 +120,9 @@
 	    truck.x = truck.x + truck.velX;
 	    if (truck.x > 880) truck.x = -100;
 	    if (truck.x < -100) truck.x = 880;
-	    if (truck.hitTest(rat.x, rat.y)) {
-	      console.log("You Lose!");
-	    }
+	    // if (truck.hitTest(rat.x, rat.y)){
+	    //     console.log("You Lose!");
+	    // }
 	  }
 	}
 	
