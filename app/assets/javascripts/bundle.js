@@ -45,10 +45,10 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	document.addEventListener('DOMContentLoaded', init);
-	const addTrucksandCabs = __webpack_require__(2);
+	const addTrucksandCabs = __webpack_require__(1);
 	
 	let stage, width, height, loader;
-	let rat, background, truck, cab;
+	let rat, background, truck, cab, gameover;
 	
 	const handleComplete = () => {
 	  // rat = new createjs.Shape();
@@ -74,17 +74,27 @@
 	  });
 	
 	  rat = new createjs.Sprite(RatSpriteSheet, "up");
-	  rat.x = 250;
+	  rat.x = 300;
 	  rat.y = 540;
 	
 	  stage.addChild(background, rat);
-	  addTrucksandCabs(stage, loader);
+	  // addTrucksandCabs(stage, loader);
+	  gameOverText(loader);
 	
 	  window.addEventListener("keydown", scurry);
 	
 	  createjs.Ticker.timingMode = createjs.Ticker.RAF;
 	  createjs.Ticker.addEventListener("tick", tick);
 	};
+	
+	function gameOverText(loader) {
+	  gameover = new createjs.Shape();
+	  gameover.graphics.beginBitmapFill(loader.getResult("gameover")).drawRect(0, 0, 200, 120);
+	  gameover.x = 350;
+	  gameover.y = 250;
+	  gameover.alpha = 0;
+	  stage.addChild(gameover);
+	}
 	
 	function scurry() {
 	  event.preventDefault();
@@ -95,7 +105,7 @@
 	      return;
 	    case "ArrowRight":
 	      rat.gotoAndPlay("right");
-	      if (rat.x <= 700) rat.x += 60;
+	      if (rat.x <= 640) rat.x += 60;
 	      return;
 	    case "ArrowDown":
 	      rat.gotoAndPlay("down");
@@ -111,18 +121,21 @@
 	function tick(event) {
 	
 	  stage.update(event);
-	
+	  // debugger
 	  let l = stage.getNumChildren();
+	  // addTruck(stage, loader);
 	
 	  // iterate through all the children and move them according to their velocity:
 	  for (var i = 2; i < l; i++) {
 	    truck = stage.getChildAt(i);
 	    truck.x = truck.x + truck.velX;
+	    let point = truck.localToLocal(0, 0, rat);
+	    if (rat.x - truck.x < -10 && rat.x - truck.x > -30 && rat.y - truck.y < 0 && rat.y - truck.y > -30) {
+	      console.log("HIT");
+	      gameover.alpha = 1;
+	    }
 	    if (truck.x > 880) truck.x = -100;
 	    if (truck.x < -100) truck.x = 880;
-	    // if (truck.hitTest(rat.x, rat.y)){
-	    //     console.log("You Lose!");
-	    // }
 	  }
 	}
 	
@@ -133,68 +146,54 @@
 	  width = stage.canvas.width;
 	  height = stage.canvas.height;
 	
-	  const manifest = [{ src: "rat.png", id: "rat" }, { src: "background.png", id: "background" }, { src: "truck.png", id: "truck" }, { src: "cab.png", id: "cab" }];
+	  const manifest = [{ src: "rat.png", id: "rat" }, { src: "background.png", id: "background" }, { src: "truck.png", id: "truck" }, { src: "gameover.png", id: "gameover" }, { src: "cab.png", id: "cab" }];
 	
 	  loader = new createjs.LoadQueue(false);
 	  loader.addEventListener("complete", handleComplete);
 	  loader.loadManifest(manifest, true, "./app/assets/images/");
 	
-	  // const ratData = {
-	  //   images: ["./app/assets/images/rat.png"],
-	  //   frames: {width:500, height:700},
-	  //   // animations: {
-	  //   //   stand:0,
-	  //   //   run:[1,5],
-	  //   //   jump:[6,8,"run"]
-	  //   // }
-	  // };
-	  // const ratSprite = new createjs.Sprite(ratData, 0);
-	
-	
-	  // let circle = new createjs.Shape();
-	  // circle.graphics.beginFill("DeepSkyBlue").drawCircle(0, 0, 50);
-	  // circle.x = 100;
-	  // circle.y = 100;
-	  // stage.addChild(circle);
 	  stage.update();
 	}
 
 /***/ },
-/* 1 */,
-/* 2 */
+/* 1 */
 /***/ function(module, exports) {
 
-	function addTrucksandCabs(stage, loader) {
-	  let truck;
-	  let positions = [];
-	
-	  for (let i = 0; i < 17; ++i) {
-	    const truckImage = randomVehicle(loader);
-	    truck = new createjs.Shape();
-	    truck.graphics.beginBitmapFill(truckImage).drawRect(0, 0, truckImage.width, truckImage.height);
-	
-	    if (coinToss() === 0) {
-	      truck.y = 310;
-	      truck.velX = -2;
-	    } else {
-	      truck.scaleX = -1;
-	      truck.y = 436;
-	      truck.velX = 2;
-	    }
-	    truck.x = randomX();
-	    truck.y = randomLane(truck);
-	
-	    while (positions.includes([truck.x, truck.y])) {
-	      truck.x = randomX();
-	      truck.y = randomLane(truck);
-	    }
-	
-	    positions.push([truck.x, truck.y]);
-	
-	    stage.addChild(truck);
-	  }
-	}
-	
+	// function addTrucksandCabs(stage, loader) {
+	//   let truck;
+	//   let positions = [];
+	//
+	//   for (let i = 0; i < 17; ++i) {
+	//     const truckImage = randomVehicle(loader);
+	//     truck = new createjs.Shape();
+	//     truck.width = truckImage.width;
+	//     truck.height = truckImage.height;
+	//     truck.graphics.beginBitmapFill(truckImage).
+	//     drawRect(0, 0, truck.width, truck.height);
+	//
+	//
+	//     if (coinToss() === 0) {
+	//       truck.y = 310;
+	//       truck.velX = -2;
+	//     } else {
+	//       truck.scaleX = -1;
+	//       truck.y = 436;
+	//       truck.velX = 2;
+	//     }
+	//     truck.x = randomX();
+	//     truck.y = randomLane(truck);
+	//
+	//     while (positions.includes([truck.x, truck.y])) {
+	//       truck.x = randomX();
+	//       truck.y = randomLane(truck);
+	//     }
+	//
+	//     positions.push([truck.x, truck.y]);
+	//     stage.addChild(truck);
+	//     // debugger
+	//   }
+	// }
+	//
 	function randomLane(truck) {
 	  return coinToss() === 0 ? truck.y : truck.y + 60;
 	}
@@ -211,7 +210,17 @@
 	  return Math.floor(Math.random() * 2);
 	}
 	
-	module.exports = addTrucksandCabs;
+	function addTruck(stage, loader) {
+	  let truck;
+	
+	  const truckImage = randomVehicle(loader);
+	  truck = new createjs.Shape();
+	  truck.width = truckImage.width;
+	  truck.height = truckImage.height;
+	  truck.graphics.beginBitmapFill(truckImage).drawRect(0, 0, truck.width, truck.height);
+	}
+	
+	module.exports = addTruck;
 
 /***/ }
 /******/ ]);
