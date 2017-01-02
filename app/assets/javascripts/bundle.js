@@ -51,6 +51,7 @@
 	let stage, width, height, loader;
 	let rat, background, cab, gameover;
 	let score, alive;
+	let truckCount, pedestrianCount, firstChildren;
 	
 	const handleComplete = () => {
 	  // rat = new createjs.Shape();
@@ -82,8 +83,9 @@
 	  rat.y = 540;
 	
 	  stage.addChild(background, rat);
-	  addTrucksandCabs(stage, loader);
-	  addPedestrians(stage, loader);
+	  firstChildren = 2;
+	  addTrucksandCabs(stage, loader, truckCount);
+	  addPedestrians(stage, loader, pedestrianCount);
 	  // gameOverText(loader);
 	
 	  window.addEventListener("keydown", scurry);
@@ -124,6 +126,12 @@
 	      if (rat.x >= 60) rat.x -= 60;
 	      score -= 2;
 	      return;
+	    case "Enter":
+	      if (pedestrianCount < 30) {
+	        addPedestrians(stage, loader, pedestrianCount, false);
+	        pedestrianCount += 4;
+	      }
+	      return;
 	  }
 	}
 	
@@ -136,20 +144,31 @@
 	}
 	
 	function movePedestrians() {
-	  for (let i = 22; i < stage.getNumChildren(); ++i) {
+	  for (let i = truckCount + firstChildren; i < stage.getNumChildren(); ++i) {
 	    let pedestrian = stage.getChildAt(i);
 	    checkRatCollision(pedestrian);
 	    if (pathBlocked(pedestrian)) {
 	      stepAside(pedestrian);
 	    } else {
 	      pedestrian.x += pedestrian.vel;
-	      chooseAnimation(pedestrian);
+	      if (pedestrian.vel > 0) {
+	        pedestrian.direction = "right";
+	      } else {
+	        pedestrian.direction = "left";
+	      }
 	    }
+	    choosePedestrianAnimation(pedestrian);
 	    if (pedestrian.x < -30) {
 	      pedestrian.x = 810;
 	    } else if (pedestrian.x > 810) {
 	      pedestrian.x = -30;
 	    }
+	  }
+	}
+	
+	function choosePedestrianAnimation(pedestrian) {
+	  if (pedestrian.currentAnimation !== pedestrian.direction) {
+	    pedestrian.gotoAndPlay(pedestrian.direction);
 	  }
 	}
 	
@@ -163,19 +182,19 @@
 	
 	function stepAside(pedestrian) {
 	  if (pedestrian.y >= 280) {
-	    pedestrian.gotoAndPlay("up");
+	    pedestrian.direction = "up";
 	    pedestrian.y -= Math.abs(pedestrian.vel);
 	    pedestrian.prefersUp = true;
 	  } else if (pedestrian.y <= 100) {
-	    pedestrian.gotoAndPlay("down");
+	    pedestrian.direction = "down";
 	    pedestrian.y += Math.abs(pedestrian.vel);
 	    pedestrian.prefersUp = false;
 	  } else {
 	    if (pedestrian.prefersUp) {
-	      pedestrian.gotoAndPlay("up");
+	      pedestrian.direction = "up";
 	      pedestrian.y -= Math.abs(pedestrian.vel);
 	    } else {
-	      pedestrian.gotoAndPlay("down");
+	      pedestrian.direction = "down";
 	      pedestrian.y += Math.abs(pedestrian.vel);
 	    }
 	  }
@@ -183,7 +202,7 @@
 	
 	function pathBlocked(pedestrian) {
 	  let blocked = false;
-	  for (let i = 22; i < stage.getNumChildren(); ++i) {
+	  for (let i = truckCount + firstChildren; i < truckCount + pedestrianCount + firstChildren; ++i) {
 	    let obstical = stage.getChildAt(i);
 	    const offset = pedestrian.vel > 0 ? 30 : -30;
 	    const pedestrianLeft = pedestrian.x + offset;
@@ -202,7 +221,7 @@
 	}
 	
 	function moveTrucks() {
-	  for (let i = 2; i < 22; ++i) {
+	  for (let i = 2; i < truckCount + firstChildren; ++i) {
 	    let truck = stage.getChildAt(i);
 	    truck.x = truck.x + truck.velX;
 	    const adjustment = truck.vel < 0 ? truck.width : 0;
@@ -234,6 +253,8 @@
 	  stage = new createjs.Stage(canvas);
 	  score = 0;
 	  alive = true;
+	  truckCount = 15;
+	  pedestrianCount = 15;
 	
 	  width = stage.canvas.width;
 	  height = stage.canvas.height;
@@ -253,7 +274,7 @@
 
 	const shuffle = __webpack_require__(2);
 	
-	function addTrucksandCabs(stage, loader) {
+	function addTrucksandCabs(stage, loader, truckCount) {
 	  let truck;
 	  let positions = [];
 	
@@ -268,7 +289,7 @@
 	
 	  shuffle(truckPositions);
 	
-	  for (let i = 0; i < 20; ++i) {
+	  for (let i = 0; i < truckCount; ++i) {
 	    const truckPos = truckPositions.pop();
 	    const truckImage = randomVehicle(loader);
 	    truck = new createjs.Shape();
@@ -340,10 +361,12 @@
 
 	const shuffle = __webpack_require__(2);
 	
-	function addPedestrians(stage, loader) {
-	  let pedestrian;
+	let PedestrianSpriteSheet;
+	const positions = [];
+	let pedestrian;
 	
-	  const PedestrianSpriteSheet = new createjs.SpriteSheet({
+	function addPedestrians(stage, loader, pedestrianCount, first = true) {
+	  PedestrianSpriteSheet = new createjs.SpriteSheet({
 	    framerate: 20,
 	    "images": [loader.getResult("pedestrian")],
 	    "frames": { "regX": 0,
@@ -359,7 +382,32 @@
 	    }
 	  });
 	
-	  let positions = [];
+	  if (first) {
+	    _initializePedestrians(stage, loader, pedestrianCount);
+	  } else {
+	    _addNewPedestrians(stage, loader, pedestrianCount);
+	  }
+	}
+	
+	function _addNewPedestrians(stage, loader, pedestrianCount) {
+	  for (let i = 0; i < 4; ++i) {
+	    pedestrian = new createjs.Sprite(PedestrianSpriteSheet, "right");
+	    const pos = positions.pop();
+	    stage.addChild(pedestrian);
+	    pedestrian.x = pos[0];
+	    pedestrian.y = pos[1];
+	    pedestrian.regX = 13;
+	    pedestrian.width = 10;
+	    pedestrian.height = 10;
+	    pedestrian.vel = Math.floor(Math.random() * 3) + 1;
+	    let multiplier = Math.floor(Math.random() * 2);
+	    if (multiplier === 0) multiplier = -1;
+	    pedestrian.prefersUp = Math.floor(Math.random() * 2) === 0;
+	    pedestrian.vel *= multiplier;
+	  }
+	}
+	
+	function _initializePedestrians(stage, loader, pedestrianCount) {
 	  for (let xPos = 0; xPos <= 780; xPos += 30) {
 	    for (let yPos = 100; yPos < 280; yPos += 30) {
 	      positions.push([xPos, yPos]);
@@ -368,22 +416,21 @@
 	
 	  shuffle(positions);
 	
-	  for (let i = 0; i < 20; ++i) {
+	  for (let i = 0; i < pedestrianCount; ++i) {
 	    pedestrian = new createjs.Sprite(PedestrianSpriteSheet, "right");
 	    const pos = positions.pop();
 	    stage.addChild(pedestrian);
 	    pedestrian.x = pos[0];
 	    pedestrian.y = pos[1];
-	    pedestrian.width = 27;
-	    pedestrian.height = 27;
+	    pedestrian.regX = 13;
+	    pedestrian.width = 10;
+	    pedestrian.height = 10;
 	    pedestrian.vel = Math.floor(Math.random() * 3) + 1;
 	    let multiplier = Math.floor(Math.random() * 2);
 	    if (multiplier === 0) multiplier = -1;
 	    pedestrian.prefersUp = Math.floor(Math.random() * 2) === 0;
 	    pedestrian.vel *= multiplier;
 	  }
-	
-	  return pedestrian;
 	}
 	
 	module.exports = addPedestrians;
