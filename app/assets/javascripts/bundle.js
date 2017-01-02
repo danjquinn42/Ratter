@@ -46,9 +46,10 @@
 
 	document.addEventListener('DOMContentLoaded', init);
 	const addTrucksandCabs = __webpack_require__(1);
+	const addPedestrians = __webpack_require__(2);
 	
 	let stage, width, height, loader;
-	let rat, background, truck, cab, gameover;
+	let rat, background, truck, cab, pedestrian, gameover;
 	
 	const handleComplete = () => {
 	  // rat = new createjs.Shape();
@@ -79,7 +80,8 @@
 	  rat.x = 300;
 	  rat.y = 540;
 	
-	  stage.addChild(background, rat);
+	  stage.addChild(background, rat, pedestrian);
+	  addPedestrians(stage, loader);
 	  addTrucksandCabs(stage, loader);
 	  gameOverText(loader);
 	
@@ -124,32 +126,42 @@
 	
 	  stage.update(event);
 	  // debugger
-	  let l = stage.getNumChildren();
-	  // addTruck(stage, loader);
+	  pedestrian = stage.getChildAt(2);
+	  if (pedestrian.x > 800) {
+	    pedestrian.x = -50;
+	  }
+	  pedestrian.x += 6;
 	
-	  // iterate through all the children and move them according to their velocity:
-	  for (var i = 2; i < l; i++) {
+	  moveTrucks();
+	}
+	
+	function moveTrucks() {
+	  let l = stage.getNumChildren();
+	  for (var i = 3; i < l; i++) {
 	    truck = stage.getChildAt(i);
 	    truck.x = truck.x + truck.velX;
-	    let point = truck.localToLocal(0, 0, rat);
-	    // if (rat.x - truck.x < -10 &&
-	    //   rat.x - truck.x > -30 &&
-	    //   rat.y - truck.y < 0 &&
-	    //   rat.y - truck.y > -30) {
-	    const ratLeft = rat.x + 15;
-	    const ratRight = rat.x + 45;
-	    const ratTop = rat.y;
-	    const ratBottom = rat.y + 60;
-	    const truckLeft = truck.x;
-	    const truckRight = truck.x + truck.width;
-	    const truckTop = truck.y;
-	    const truckBottom = truck.y + truck.height;
-	    if (ratLeft < truckRight && ratRight > truckLeft && ratTop < truckBottom && ratBottom > truckTop) {
-	      console.log("truck.w", truck.width, "truck.x", truck.x);
-	      gameover.alpha = 1;
+	    // let point = truck.localToLocal(0, 0, rat);
+	    if (checkRatCollision(truck)) {
+	      console.log("hit by truck");
 	    }
 	    if (truck.x > 880) truck.x = -100;
 	    if (truck.x < -100) truck.x = 880;
+	  }
+	}
+	
+	function checkRatCollision(obstical) {
+	  const ratLeft = rat.x + 15;
+	  const ratRight = rat.x + 45;
+	  const ratTop = rat.y;
+	  const ratBottom = rat.y + 60;
+	  const obsticalLeft = obstical.x;
+	  const obsticalRight = obstical.x + obstical.width;
+	  const obsticalTop = obstical.y;
+	  const obsticalBottom = obstical.y + obstical.height;
+	  if (ratLeft < obsticalRight && ratRight > obsticalLeft && ratTop < obsticalBottom && ratBottom > obsticalTop) {
+	    return true;
+	  } else {
+	    return false;
 	  }
 	}
 	
@@ -160,7 +172,7 @@
 	  width = stage.canvas.width;
 	  height = stage.canvas.height;
 	
-	  const manifest = [{ src: "rat.png", id: "rat" }, { src: "background.png", id: "background" }, { src: "truck.png", id: "truck" }, { src: "gameover.png", id: "gameover" }, { src: "cab.png", id: "cab" }];
+	  const manifest = [{ src: "rat.png", id: "rat" }, { src: "background.png", id: "background" }, { src: "truck.png", id: "truck" }, { src: "gameover.png", id: "gameover" }, { src: "cab.png", id: "cab" }, { src: "pedestrian.png", id: "pedestrian" }];
 	
 	  loader = new createjs.LoadQueue(false);
 	  loader.addEventListener("complete", handleComplete);
@@ -179,11 +191,11 @@
 	
 	  let truckPositions = [];
 	
-	  for (let i = 0; i < 10; ++i) {
-	    truckPositions.push([i * 100, 310]);
-	    truckPositions.push([i * 100, 370]);
-	    truckPositions.push([i * 100, 436]);
-	    truckPositions.push([i * 100, 496]);
+	  for (let i = 0; i < 8; ++i) {
+	    truckPositions.push([i * 110, 310]);
+	    truckPositions.push([i * 110, 370]);
+	    truckPositions.push([i * 110, 436]);
+	    truckPositions.push([i * 110, 496]);
 	  }
 	
 	  shuffle(truckPositions);
@@ -247,6 +259,36 @@
 	}
 	
 	module.exports = addTrucksandCabs;
+
+/***/ },
+/* 2 */
+/***/ function(module, exports) {
+
+	function addPedestrians(stage, loader) {
+	  let pedestrian;
+	
+	  const PedestrianSpriteSheet = new createjs.SpriteSheet({
+	    framerate: 20,
+	    "images": [loader.getResult("pedestrian")],
+	    "frames": { "regX": 0, "height": 27, "count": 32, "regY": 0, "width": 27 },
+	    "animations": {
+	      "left": [0, 7],
+	      "right": [8, 15],
+	      "down": [16, 23],
+	      "up": [24, 31]
+	    }
+	  });
+	
+	  pedestrian = new createjs.Sprite(PedestrianSpriteSheet, "right");
+	
+	  stage.addChild(pedestrian);
+	  pedestrian.x = 300;
+	  pedestrian.y = 180;
+	
+	  return pedestrian;
+	}
+	
+	module.exports = addPedestrians;
 
 /***/ }
 /******/ ]);
