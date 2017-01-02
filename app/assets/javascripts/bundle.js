@@ -46,10 +46,11 @@
 
 	document.addEventListener('DOMContentLoaded', init);
 	const addTrucksandCabs = __webpack_require__(1);
-	const addPedestrians = __webpack_require__(2);
+	const addPedestrians = __webpack_require__(3);
 	
 	let stage, width, height, loader;
 	let rat, background, cab, gameover;
+	let score, alive;
 	
 	const handleComplete = () => {
 	  // rat = new createjs.Shape();
@@ -106,40 +107,40 @@
 	    case "ArrowUp":
 	      rat.gotoAndPlay("up");
 	      if (rat.y > 0) rat.y -= 60;
+	      score += 20;
 	      return;
 	    case "ArrowRight":
 	      rat.gotoAndPlay("right");
 	      if (rat.x < width - 60) rat.x += 60;
+	      score -= 2;
 	      return;
 	    case "ArrowDown":
 	      rat.gotoAndPlay("down");
 	      if (rat.y < height - 60) rat.y += 60;
+	      score -= 5;
 	      return;
 	    case "ArrowLeft":
 	      rat.gotoAndPlay("left");
 	      if (rat.x >= 60) rat.x -= 60;
+	      score -= 2;
 	      return;
 	  }
 	}
 	
 	function tick(event) {
-	  stage.update(event);
-	
-	  // pedestrian = stage.getChildAt(22);
-	  // if (pedestrian.x > 800) {
-	  //   pedestrian.x = -50;
-	  // }
-	  // pedestrian.x += 6;
-	  movePedestrians();
-	  moveTrucks();
+	  if (alive) {
+	    stage.update(event);
+	    movePedestrians();
+	    moveTrucks();
+	  }
 	}
 	
 	function movePedestrians() {
 	  for (let i = 22; i < stage.getNumChildren(); ++i) {
 	    let pedestrian = stage.getChildAt(i);
+	    checkRatCollision(pedestrian);
 	    if (pathBlocked(pedestrian)) {
 	      stepAside(pedestrian);
-	      console.log("blocked");
 	    } else {
 	      pedestrian.x += pedestrian.vel;
 	      chooseAnimation(pedestrian);
@@ -204,16 +205,14 @@
 	  for (let i = 2; i < 22; ++i) {
 	    let truck = stage.getChildAt(i);
 	    truck.x = truck.x + truck.velX;
-	    if (checkRatCollision(truck)) {
-	      console.log("hit by truck");
-	    }
+	    const adjustment = truck.vel < 0 ? truck.width : 0;
+	    checkRatCollision(truck, adjustment);
 	    if (truck.x > 880) truck.x = -100;
 	    if (truck.x < -100) truck.x = 880;
 	  }
 	}
 	
-	function checkRatCollision(obstical) {
-	  const adjustment = obstical.vel < 0 ? obstical.width : 0;
+	function checkRatCollision(obstical, adjustment = 0) {
 	  const ratLeft = rat.x + 15;
 	  const ratRight = rat.x + 45;
 	  const ratTop = rat.y;
@@ -223,6 +222,7 @@
 	  const obsticalTop = obstical.y;
 	  const obsticalBottom = obstical.y + obstical.height;
 	  if (ratLeft < obsticalRight && ratRight > obsticalLeft && ratTop < obsticalBottom && ratBottom > obsticalTop) {
+	    alive = false;
 	    return true;
 	  } else {
 	    return false;
@@ -232,6 +232,8 @@
 	function init() {
 	  const canvas = document.getElementById("ratterCanvas");
 	  stage = new createjs.Stage(canvas);
+	  score = 0;
+	  alive = true;
 	
 	  width = stage.canvas.width;
 	  height = stage.canvas.height;
@@ -249,7 +251,7 @@
 /* 1 */
 /***/ function(module, exports, __webpack_require__) {
 
-	const shuffle = __webpack_require__(3);
+	const shuffle = __webpack_require__(2);
 	
 	function addTrucksandCabs(stage, loader) {
 	  let truck;
@@ -279,7 +281,7 @@
 	    if (truck.y < 400) {
 	      truck.velX = -2;
 	    } else {
-	      // truck.regX = truckImage.width / 2;
+	      truck.regX = truckImage.width;
 	      truck.scaleX = -1;
 	      truck.velX = 2;
 	    }
@@ -318,9 +320,25 @@
 
 /***/ },
 /* 2 */
+/***/ function(module, exports) {
+
+	function shuffle(arr) {
+	    let j, x, i;
+	    for (i = arr.length; i; i--) {
+	        j = Math.floor(Math.random() * i);
+	        x = arr[i - 1];
+	        arr[i - 1] = arr[j];
+	        arr[j] = x;
+	    }
+	}
+	
+	module.exports = shuffle;
+
+/***/ },
+/* 3 */
 /***/ function(module, exports, __webpack_require__) {
 
-	const shuffle = __webpack_require__(3);
+	const shuffle = __webpack_require__(2);
 	
 	function addPedestrians(stage, loader) {
 	  let pedestrian;
@@ -357,6 +375,7 @@
 	    pedestrian.x = pos[0];
 	    pedestrian.y = pos[1];
 	    pedestrian.width = 27;
+	    pedestrian.height = 27;
 	    pedestrian.vel = Math.floor(Math.random() * 3) + 1;
 	    let multiplier = Math.floor(Math.random() * 2);
 	    if (multiplier === 0) multiplier = -1;
@@ -368,22 +387,6 @@
 	}
 	
 	module.exports = addPedestrians;
-
-/***/ },
-/* 3 */
-/***/ function(module, exports) {
-
-	function shuffle(arr) {
-	    let j, x, i;
-	    for (i = arr.length; i; i--) {
-	        j = Math.floor(Math.random() * i);
-	        x = arr[i - 1];
-	        arr[i - 1] = arr[j];
-	        arr[j] = x;
-	    }
-	}
-	
-	module.exports = shuffle;
 
 /***/ }
 /******/ ]);
