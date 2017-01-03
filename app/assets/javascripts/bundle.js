@@ -158,12 +158,15 @@
 	      addPedestrians(stage, loader, count, false);
 	      count.pedestrians += 3;
 	      trucks.forEach(truck => {
-	        truck.vel += 0.5;
+	        truck.velX *= 1.1;
 	      });
 	      rat.x = 300;
 	      rat.y = 540;
 	    }
 	    adjustScore();
+	  } else {
+	    stage.clear();
+	    init();
 	  }
 	}
 	
@@ -352,7 +355,7 @@
 	    } else {
 	      truck.regX = truckImage.width;
 	      truck.scaleX = -1;
-	      truck.velX = 2;
+	      truck.velX = 1.5;
 	    }
 	    stage.addChild(truck);
 	    trucks.push(truck);
