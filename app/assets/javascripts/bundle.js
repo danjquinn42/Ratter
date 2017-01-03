@@ -47,23 +47,20 @@
 	document.addEventListener('DOMContentLoaded', init);
 	const addTrucksandCabs = __webpack_require__(1);
 	const addPedestrians = __webpack_require__(3);
+	const addTrashCans = __webpack_require__(4);
 	
 	let stage, width, height, loader;
-	let rat, background, cab;
+	let rat, background, trashCans, trucks;
 	let score, alive;
 	let count = { trucks: 0, pedestrians: 0, firstChildren: 0 };
 	let scoreBoard = {};
 	
 	const handleComplete = () => {
-	  // rat = new createjs.Shape();
-	  // rat.graphics.beginBitmapFill(loader.getResult("rat")).drawRect(0, 0, 60, 60);
+	
 	  width = 780;
 	  height = 600;
 	  background = new createjs.Shape();
 	  background.graphics.beginBitmapFill(loader.getResult("background")).drawRect(0, 0, width, height);
-	
-	  // road.y = 260;
-	
 	
 	  const RatSpriteSheet = new createjs.SpriteSheet({
 	    framerate: 20,
@@ -89,25 +86,26 @@
 	    "frames": { "regX": 0, "height": 33, "count": 10, "regY": 0, "width": 24 },
 	    "animations": {
 	      "0": [0], "1": [1], "2": [2], "3": [3], "4": [4],
-	      "5": [5], "6": [6], "seven": [7], "8": [8], "9": [9]
+	      "5": [5], "6": [6], "7": [7], "8": [8], "9": [9]
 	    }
 	  });
 	
 	  scoreBoard = { ones: {}, tens: {}, hundreds: {}, thousands: {} };
 	
 	  scoreBoard.ones = new createjs.Sprite(ScoreSpriteSheet);
-	  scoreBoard.ones.x = 472;
+	  scoreBoard.ones.x = 572;
 	  scoreBoard.tens = new createjs.Sprite(ScoreSpriteSheet);
-	  scoreBoard.tens.x = 448;
+	  scoreBoard.tens.x = 548;
 	  scoreBoard.hundreds = new createjs.Sprite(ScoreSpriteSheet);
-	  scoreBoard.hundreds.x = 424;
+	  scoreBoard.hundreds.x = 524;
 	  scoreBoard.thousands = new createjs.Sprite(ScoreSpriteSheet);
-	  scoreBoard.thousands.x = 400;
+	  scoreBoard.thousands.x = 500;
 	
 	  stage.addChild(background, rat);
 	  count.firstChildren = 2;
-	  addTrucksandCabs(stage, loader, count.trucks);
+	  trucks = addTrucksandCabs(stage, loader, count.trucks);
 	  addPedestrians(stage, loader, count);
+	  trashCans = addTrashCans(stage, loader);
 	  stage.addChild(scoreBoard.ones, scoreBoard.tens, scoreBoard.hundreds, scoreBoard.thousands);
 	
 	  window.addEventListener("keydown", scurry);
@@ -121,8 +119,10 @@
 	  switch (event.key) {
 	    case "ArrowUp":
 	      rat.gotoAndPlay("up");
-	      if (rat.y > 0) rat.y -= 60;
-	      score += 2;
+	      if (rat.y > 60) {
+	        rat.y -= 60;
+	        score += 50;
+	      }
 	      return;
 	    case "ArrowRight":
 	      rat.gotoAndPlay("right");
@@ -130,19 +130,15 @@
 	      return;
 	    case "ArrowDown":
 	      rat.gotoAndPlay("down");
-	      if (rat.y < height - 60) rat.y += 60;
-	      score -= 3;
+	      if (rat.y < height - 60) {
+	        rat.y += 60;
+	        score -= 50;
+	      }
 	      return;
 	    case "ArrowLeft":
 	      rat.gotoAndPlay("left");
 	      if (rat.x >= 60) rat.x -= 60;
 	      return;
-	    case "Enter":
-	      if (count.pedestrians < 30) {
-	        addPedestrians(stage, loader, count.pedestrians, false);
-	        count.pedestrians += 4;
-	        return;
-	      }
 	  }
 	}
 	
@@ -157,26 +153,52 @@
 	    stage.update(event);
 	    movePedestrians();
 	    moveTrucks();
+	    if (ratIsSafe()) {
+	      score += 600;
+	      addPedestrians(stage, loader, count, false);
+	      count.pedestrians += 3;
+	      trucks.forEach(truck => {
+	        truck.vel += 0.5;
+	      });
+	      rat.x = 300;
+	      rat.y = 540;
+	    }
 	    adjustScore();
 	  }
 	}
 	
+	function ratIsSafe() {
+	  let safe = false;
+	  trashCans.forEach(trash => {
+	    if (checkRatCollision(trash)) {
+	      if (trash.currentAnimation === "empty") {
+	        trash.gotoAndStop("full");
+	        safe = true;
+	      }
+	    }
+	  });
+	  return safe;
+	}
+	
 	function adjustScore() {
-	  if (score < 0) score = 0;
+	  console.log(score);
 	  let scoreDigits = score.toString().split('').map(Number);
-	  // let scoreDigits = score.toString().split("");
 	  while (scoreDigits.length < 4) {
 	    scoreDigits.unshift(0);
 	  }
+	  console.log(score);
 	  scoreBoard.ones.gotoAndStop(scoreDigits[3]);
 	  scoreBoard.tens.gotoAndStop(scoreDigits[2]);
 	  scoreBoard.hundreds.gotoAndStop(scoreDigits[1]);
+	  scoreBoard.thousands.gotoAndStop(scoreDigits[0]);
 	}
 	
 	function movePedestrians() {
 	  for (let i = count.trucks + count.firstChildren; i < count.trucks + count.pedestrians + count.firstChildren; ++i) {
 	    let pedestrian = stage.getChildAt(i);
-	    checkRatCollision(pedestrian);
+	    if (checkRatCollision(pedestrian)) {
+	      alive = false;
+	    }
 	    if (pathBlocked(pedestrian)) {
 	      stepAside(pedestrian);
 	    } else {
@@ -247,7 +269,9 @@
 	    let truck = stage.getChildAt(i);
 	    truck.x = truck.x + truck.velX;
 	    const adjustment = truck.vel < 0 ? truck.width : 0;
-	    checkRatCollision(truck, adjustment);
+	    if (checkRatCollision(truck, adjustment)) {
+	      alive = false;
+	    }
 	    if (truck.x > 880) truck.x = -100;
 	    if (truck.x < -100) truck.x = 880;
 	  }
@@ -258,12 +282,13 @@
 	  const ratRight = rat.x + 45;
 	  const ratTop = rat.y;
 	  const ratBottom = rat.y + 60;
+	
 	  const obsticalLeft = obstical.x - adjustment;
 	  const obsticalRight = obstical.x + obstical.width - adjustment;
 	  const obsticalTop = obstical.y;
 	  const obsticalBottom = obstical.y + obstical.height;
 	  if (ratLeft < obsticalRight && ratRight > obsticalLeft && ratTop < obsticalBottom && ratBottom > obsticalTop) {
-	    alive = false;
+	
 	    return true;
 	  } else {
 	    return false;
@@ -275,13 +300,13 @@
 	  stage = new createjs.Stage(canvas);
 	  score = 0;
 	  alive = true;
-	  count.trucks = 15;
-	  count.pedestrians = 15;
+	  count.trucks = 10;
+	  count.pedestrians = 5;
 	
 	  width = stage.canvas.width;
 	  height = stage.canvas.height;
 	
-	  const manifest = [{ src: "rat.png", id: "rat" }, { src: "background.png", id: "background" }, { src: "truck.png", id: "truck" }, { src: "cab.png", id: "cab" }, { src: "pedestrian.png", id: "pedestrian" }, { src: "numbers.png", id: "numbers" }];
+	  const manifest = [{ src: "rat.png", id: "rat" }, { src: "background.png", id: "background" }, { src: "truck.png", id: "truck" }, { src: "cab.png", id: "cab" }, { src: "pedestrian.png", id: "pedestrian" }, { src: "numbers.png", id: "numbers" }, { src: "trash.png", id: "trash" }];
 	
 	  loader = new createjs.LoadQueue(false);
 	  loader.addEventListener("complete", handleComplete);
@@ -298,6 +323,7 @@
 	
 	function addTrucksandCabs(stage, loader, truckCount) {
 	  let truck;
+	  let trucks = [];
 	  let positions = [];
 	
 	  let truckPositions = [];
@@ -329,7 +355,9 @@
 	      truck.velX = 2;
 	    }
 	    stage.addChild(truck);
+	    trucks.push(truck);
 	  }
+	  return trucks;
 	}
 	
 	/////
@@ -347,16 +375,6 @@
 	
 	function coinToss() {
 	  return Math.floor(Math.random() * 2);
-	}
-	
-	function addTruck(stage, loader) {
-	  let truck;
-	
-	  const truckImage = randomVehicle(loader);
-	  truck = new createjs.Shape();
-	  truck.width = truckImage.width;
-	  truck.height = truckImage.height;
-	  truck.graphics.beginBitmapFill(truckImage).drawRect(0, 0, truck.width, truck.height);
 	}
 	
 	module.exports = addTrucksandCabs;
@@ -412,7 +430,7 @@
 	}
 	
 	function _addNewPedestrians(stage, loader, count) {
-	  for (let i = 0; i < 4; ++i) {
+	  for (let i = 0; i < 3; ++i) {
 	    pedestrian = new createjs.Sprite(PedestrianSpriteSheet, "right");
 	    const pos = positions.pop();
 	    stage.addChild(pedestrian);
@@ -458,6 +476,42 @@
 	}
 	
 	module.exports = addPedestrians;
+
+/***/ },
+/* 4 */
+/***/ function(module, exports) {
+
+	function addTrashCans(stage, loader) {
+	  const trashCans = [];
+	  for (let i = 0; i < 6; ++i) {
+	    const TrashSpriteSheet = new createjs.SpriteSheet({
+	      framerate: 20,
+	      "images": [loader.getResult("trash")],
+	      frames: { "redX": 0,
+	        "height": 60,
+	        "count": 2,
+	        "regY": 27,
+	        "width": 54
+	      },
+	      "animations": {
+	        "full": [0],
+	        "empty": [1]
+	      }
+	    });
+	
+	    let trash = new createjs.Sprite(TrashSpriteSheet, "empty");
+	    trash.width = 54;
+	    trash.height = 60;
+	    trash.x = 120 * i + 64;
+	    trash.y = 60;
+	    stage.addChild(trash);
+	
+	    trashCans.push(trash);
+	  }
+	  return trashCans;
+	}
+	
+	module.exports = addTrashCans;
 
 /***/ }
 /******/ ]);
