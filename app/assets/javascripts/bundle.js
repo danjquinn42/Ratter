@@ -49,9 +49,10 @@
 	const addPedestrians = __webpack_require__(3);
 	
 	let stage, width, height, loader;
-	let rat, background, cab, gameover;
+	let rat, background, cab;
 	let score, alive;
-	let truckCount, pedestrianCount, firstChildren;
+	let count = { trucks: 0, pedestrians: 0, firstChildren: 0 };
+	let scoreBoard = {};
 	
 	const handleComplete = () => {
 	  // rat = new createjs.Shape();
@@ -82,11 +83,32 @@
 	  rat.x = 300;
 	  rat.y = 540;
 	
+	  const ScoreSpriteSheet = new createjs.SpriteSheet({
+	    framerate: 20,
+	    "images": [loader.getResult("numbers")],
+	    "frames": { "regX": 0, "height": 33, "count": 10, "regY": 0, "width": 24 },
+	    "animations": {
+	      "0": [0], "1": [1], "2": [2], "3": [3], "4": [4],
+	      "5": [5], "6": [6], "seven": [7], "8": [8], "9": [9]
+	    }
+	  });
+	
+	  scoreBoard = { ones: {}, tens: {}, hundreds: {}, thousands: {} };
+	
+	  scoreBoard.ones = new createjs.Sprite(ScoreSpriteSheet);
+	  scoreBoard.ones.x = 472;
+	  scoreBoard.tens = new createjs.Sprite(ScoreSpriteSheet);
+	  scoreBoard.tens.x = 448;
+	  scoreBoard.hundreds = new createjs.Sprite(ScoreSpriteSheet);
+	  scoreBoard.hundreds.x = 424;
+	  scoreBoard.thousands = new createjs.Sprite(ScoreSpriteSheet);
+	  scoreBoard.thousands.x = 400;
+	
 	  stage.addChild(background, rat);
-	  firstChildren = 2;
-	  addTrucksandCabs(stage, loader, truckCount);
-	  addPedestrians(stage, loader, pedestrianCount);
-	  // gameOverText(loader);
+	  count.firstChildren = 2;
+	  addTrucksandCabs(stage, loader, count.trucks);
+	  addPedestrians(stage, loader, count);
+	  stage.addChild(scoreBoard.ones, scoreBoard.tens, scoreBoard.hundreds, scoreBoard.thousands);
 	
 	  window.addEventListener("keydown", scurry);
 	
@@ -94,45 +116,40 @@
 	  createjs.Ticker.addEventListener("tick", tick);
 	};
 	
-	function gameOverText(loader) {
-	  gameover = new createjs.Shape();
-	  gameover.graphics.beginBitmapFill(loader.getResult("gameover")).drawRect(0, 0, 200, 120);
-	  gameover.x = 350;
-	  gameover.y = 250;
-	  gameover.alpha = 0;
-	  stage.addChild(gameover);
-	}
-	
 	function scurry() {
 	  event.preventDefault();
 	  switch (event.key) {
 	    case "ArrowUp":
 	      rat.gotoAndPlay("up");
 	      if (rat.y > 0) rat.y -= 60;
-	      score += 20;
+	      score += 2;
 	      return;
 	    case "ArrowRight":
 	      rat.gotoAndPlay("right");
 	      if (rat.x < width - 60) rat.x += 60;
-	      score -= 2;
 	      return;
 	    case "ArrowDown":
 	      rat.gotoAndPlay("down");
 	      if (rat.y < height - 60) rat.y += 60;
-	      score -= 5;
+	      score -= 3;
 	      return;
 	    case "ArrowLeft":
 	      rat.gotoAndPlay("left");
 	      if (rat.x >= 60) rat.x -= 60;
-	      score -= 2;
 	      return;
 	    case "Enter":
-	      if (pedestrianCount < 30) {
-	        addPedestrians(stage, loader, pedestrianCount, false);
-	        pedestrianCount += 4;
+	      if (count.pedestrians < 30) {
+	        addPedestrians(stage, loader, count.pedestrians, false);
+	        count.pedestrians += 4;
+	        return;
 	      }
-	      return;
 	  }
+	}
+	
+	function sort(a, b) {
+	  if (a > b) return 1;
+	  if (a === b) return 0;
+	  if (a < b) return -1;
 	}
 	
 	function tick(event) {
@@ -140,11 +157,24 @@
 	    stage.update(event);
 	    movePedestrians();
 	    moveTrucks();
+	    adjustScore();
 	  }
 	}
 	
+	function adjustScore() {
+	  if (score < 0) score = 0;
+	  let scoreDigits = score.toString().split('').map(Number);
+	  // let scoreDigits = score.toString().split("");
+	  while (scoreDigits.length < 4) {
+	    scoreDigits.unshift(0);
+	  }
+	  scoreBoard.ones.gotoAndStop(scoreDigits[3]);
+	  scoreBoard.tens.gotoAndStop(scoreDigits[2]);
+	  scoreBoard.hundreds.gotoAndStop(scoreDigits[1]);
+	}
+	
 	function movePedestrians() {
-	  for (let i = truckCount + firstChildren; i < stage.getNumChildren(); ++i) {
+	  for (let i = count.trucks + count.firstChildren; i < count.trucks + count.pedestrians + count.firstChildren; ++i) {
 	    let pedestrian = stage.getChildAt(i);
 	    checkRatCollision(pedestrian);
 	    if (pathBlocked(pedestrian)) {
@@ -172,14 +202,6 @@
 	  }
 	}
 	
-	function chooseAnimation(pedestrian) {
-	  if (pedestrian.vel > 0 && pedestrian.currentAnimation !== "right") {
-	    pedestrian.gotoAndPlay("right");
-	  } else if (pedestrian.vel < 0 && pedestrian.currentAnimation !== "left") {
-	    pedestrian.gotoAndPlay("left");
-	  }
-	}
-	
 	function stepAside(pedestrian) {
 	  if (pedestrian.y >= 280) {
 	    pedestrian.direction = "up";
@@ -202,7 +224,7 @@
 	
 	function pathBlocked(pedestrian) {
 	  let blocked = false;
-	  for (let i = truckCount + firstChildren; i < truckCount + pedestrianCount + firstChildren; ++i) {
+	  for (let i = count.trucks + count.firstChildren; i < count.trucks + count.pedestrians + count.firstChildren; ++i) {
 	    let obstical = stage.getChildAt(i);
 	    const offset = pedestrian.vel > 0 ? 30 : -30;
 	    const pedestrianLeft = pedestrian.x + offset;
@@ -221,7 +243,7 @@
 	}
 	
 	function moveTrucks() {
-	  for (let i = 2; i < truckCount + firstChildren; ++i) {
+	  for (let i = count.firstChildren; i < count.trucks + count.firstChildren; ++i) {
 	    let truck = stage.getChildAt(i);
 	    truck.x = truck.x + truck.velX;
 	    const adjustment = truck.vel < 0 ? truck.width : 0;
@@ -253,13 +275,13 @@
 	  stage = new createjs.Stage(canvas);
 	  score = 0;
 	  alive = true;
-	  truckCount = 15;
-	  pedestrianCount = 15;
+	  count.trucks = 15;
+	  count.pedestrians = 15;
 	
 	  width = stage.canvas.width;
 	  height = stage.canvas.height;
 	
-	  const manifest = [{ src: "rat.png", id: "rat" }, { src: "background.png", id: "background" }, { src: "truck.png", id: "truck" }, { src: "gameover.png", id: "gameover" }, { src: "cab.png", id: "cab" }, { src: "pedestrian.png", id: "pedestrian" }];
+	  const manifest = [{ src: "rat.png", id: "rat" }, { src: "background.png", id: "background" }, { src: "truck.png", id: "truck" }, { src: "cab.png", id: "cab" }, { src: "pedestrian.png", id: "pedestrian" }, { src: "numbers.png", id: "numbers" }];
 	
 	  loader = new createjs.LoadQueue(false);
 	  loader.addEventListener("complete", handleComplete);
@@ -365,7 +387,7 @@
 	const positions = [];
 	let pedestrian;
 	
-	function addPedestrians(stage, loader, pedestrianCount, first = true) {
+	function addPedestrians(stage, loader, count, first = true) {
 	  PedestrianSpriteSheet = new createjs.SpriteSheet({
 	    framerate: 20,
 	    "images": [loader.getResult("pedestrian")],
@@ -383,17 +405,19 @@
 	  });
 	
 	  if (first) {
-	    _initializePedestrians(stage, loader, pedestrianCount);
+	    _initializePedestrians(stage, loader, count);
 	  } else {
-	    _addNewPedestrians(stage, loader, pedestrianCount);
+	    _addNewPedestrians(stage, loader, count);
 	  }
 	}
 	
-	function _addNewPedestrians(stage, loader, pedestrianCount) {
+	function _addNewPedestrians(stage, loader, count) {
 	  for (let i = 0; i < 4; ++i) {
 	    pedestrian = new createjs.Sprite(PedestrianSpriteSheet, "right");
 	    const pos = positions.pop();
 	    stage.addChild(pedestrian);
+	    const idx = count.firstChildren + count.trucks + count.pedestrians + i;
+	    stage.setChildIndex(pedestrian, idx);
 	    pedestrian.x = pos[0];
 	    pedestrian.y = pos[1];
 	    pedestrian.regX = 13;
@@ -407,7 +431,7 @@
 	  }
 	}
 	
-	function _initializePedestrians(stage, loader, pedestrianCount) {
+	function _initializePedestrians(stage, loader, count) {
 	  for (let xPos = 0; xPos <= 780; xPos += 30) {
 	    for (let yPos = 100; yPos < 280; yPos += 30) {
 	      positions.push([xPos, yPos]);
@@ -416,7 +440,7 @@
 	
 	  shuffle(positions);
 	
-	  for (let i = 0; i < pedestrianCount; ++i) {
+	  for (let i = 0; i < count.pedestrians; ++i) {
 	    pedestrian = new createjs.Sprite(PedestrianSpriteSheet, "right");
 	    const pos = positions.pop();
 	    stage.addChild(pedestrian);
