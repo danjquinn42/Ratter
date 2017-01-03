@@ -184,12 +184,10 @@
 	}
 	
 	function adjustScore() {
-	  console.log(score);
 	  let scoreDigits = score.toString().split('').map(Number);
 	  while (scoreDigits.length < 4) {
 	    scoreDigits.unshift(0);
 	  }
-	  console.log(score);
 	  scoreBoard.ones.gotoAndStop(scoreDigits[3]);
 	  scoreBoard.tens.gotoAndStop(scoreDigits[2]);
 	  scoreBoard.hundreds.gotoAndStop(scoreDigits[1]);
