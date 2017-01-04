@@ -52,58 +52,34 @@
 	const addScoreBoard = __webpack_require__(6);
 	
 	let stage, loader;
-	let background, trashCans, trucks;
-	let score, alive;
 	let addPedestrians;
-	// let count = { trucks: 0, pedestrians: 0, firstChildren: 0 };
-	let scoreBoard = {};
 	let state;
-	// let pedestrians;
-	
-	const handleComplete = () => {
-	
-	  let width = stage.canvas.width;
-	  let height = stage.canvas.height;
-	  background = new createjs.Shape();
-	  background.graphics.beginBitmapFill(loader.getResult("background")).drawRect(0, 0, width, height);
-	
-	  stage.addChild(background);
-	
-	  addRat(state);
-	  scoreBoard = addScoreBoard(state);
-	  trucks = addTrucksandCabs(state, 10);
-	  addPedestrians = pedestrianAdder(state);
-	  addPedestrians(5);
-	  trashCans = addTrashCans(state);
-	
-	  window.addEventListener("keydown", scurry);
-	
-	  createjs.Ticker.timingMode = createjs.Ticker.RAF;
-	  createjs.Ticker.addEventListener("tick", tick);
-	};
 	
 	function scurry() {
-	  event.preventDefault();
 	  switch (event.key) {
 	    case "ArrowUp":
+	      event.preventDefault();
 	      state.rat.gotoAndPlay("up");
 	      if (state.rat.y > 60) {
 	        state.rat.y -= 60;
-	        score += 50;
+	        state.score += 50;
 	      }
 	      return;
 	    case "ArrowRight":
+	      event.preventDefault();
 	      state.rat.gotoAndPlay("right");
 	      if (state.rat.x < stage.canvas.width - 60) state.rat.x += 60;
 	      return;
 	    case "ArrowDown":
+	      event.preventDefault();
 	      state.rat.gotoAndPlay("down");
 	      if (state.rat.y < stage.canvas.height - 60) {
 	        state.rat.y += 60;
-	        score -= 50;
+	        state.score -= 50;
 	      }
 	      return;
 	    case "ArrowLeft":
+	      event.preventDefault();
 	      state.rat.gotoAndPlay("left");
 	      if (state.rat.x >= 60) state.rat.x -= 60;
 	      return;
@@ -111,14 +87,14 @@
 	}
 	
 	function tick(event) {
-	  if (alive) {
+	  if (state.alive) {
 	    stage.update(event);
 	    movePedestrians();
 	    moveTrucks();
 	    if (ratIsSafe()) {
-	      score += 600;
+	      state.score += 600;
 	      addPedestrians(3);
-	      trucks.forEach(truck => {
+	      state.trucks.forEach(truck => {
 	        truck.velX *= 1.1;
 	      });
 	      state.rat.x = 300;
@@ -126,7 +102,7 @@
 	    }
 	    adjustScore();
 	  } else {
-	    trucks = [];
+	    state.trucks = [];
 	    stage.removeAllChildren();
 	    stage.clear();
 	    init();
@@ -135,7 +111,7 @@
 	
 	function ratIsSafe() {
 	  let safe = false;
-	  trashCans.forEach(trash => {
+	  state.trashCans.forEach(trash => {
 	    if (checkRatCollision(trash)) {
 	      if (trash.currentAnimation === "empty") {
 	        trash.gotoAndStop("full");
@@ -147,20 +123,20 @@
 	}
 	
 	function adjustScore() {
-	  let scoreDigits = score.toString().split('').map(Number);
+	  let scoreDigits = state.score.toString().split('').map(Number);
 	  while (scoreDigits.length < 4) {
 	    scoreDigits.unshift(0);
 	  }
-	  scoreBoard.ones.gotoAndStop(scoreDigits[3]);
-	  scoreBoard.tens.gotoAndStop(scoreDigits[2]);
-	  scoreBoard.hundreds.gotoAndStop(scoreDigits[1]);
-	  scoreBoard.thousands.gotoAndStop(scoreDigits[0]);
+	  state.scoreBoard.ones.gotoAndStop(scoreDigits[3]);
+	  state.scoreBoard.tens.gotoAndStop(scoreDigits[2]);
+	  state.scoreBoard.hundreds.gotoAndStop(scoreDigits[1]);
+	  state.scoreBoard.thousands.gotoAndStop(scoreDigits[0]);
 	}
 	
 	function movePedestrians() {
 	  state.pedestrians.forEach(pedestrian => {
 	    if (checkRatCollision(pedestrian)) {
-	      alive = false;
+	      state.alive = false;
 	    }
 	    if (pathBlocked(pedestrian)) {
 	      stepAside(pedestrian);
@@ -226,11 +202,11 @@
 	}
 	
 	function moveTrucks() {
-	  trucks.forEach(truck => {
+	  state.trucks.forEach(truck => {
 	    truck.x = truck.x + truck.velX;
 	    const adjustment = truck.vel < 0 ? truck.width : 0;
 	    if (checkRatCollision(truck, adjustment)) {
-	      alive = false;
+	      state.alive = false;
 	    }
 	    if (truck.x > 880) truck.x = -100;
 	    if (truck.x < -100) truck.x = 880;
@@ -255,13 +231,55 @@
 	  }
 	}
 	
+	function startGame() {
+	  state.score = 0;
+	  state.alive = true;
+	
+	  addRat(state);
+	  addScoreBoard(state);
+	  addTrucksandCabs(state, 10);
+	  addPedestrians = pedestrianAdder(state);
+	  addPedestrians(5);
+	  addTrashCans(state);
+	
+	  window.addEventListener("keydown", scurry);
+	
+	  createjs.Ticker.timingMode = createjs.Ticker.RAF;
+	  createjs.Ticker.addEventListener("tick", tick);
+	}
+	
+	const handleComplete = () => {
+	  let width = stage.canvas.width;
+	  let height = stage.canvas.height;
+	  let background = new createjs.Shape();
+	  background.graphics.beginBitmapFill(loader.getResult("background")).drawRect(0, 0, width, height);
+	
+	  let title = new createjs.Text("RATTER", "80px 'VT323', monospace", "#bb3333");
+	  // let title = new createjs.Shape();
+	  // let titleImage = loader.getResult("title");
+	  // title.graphics.beginBitmapFill(titleImage).
+	  //   drawRect(0, 0, titleImage.width, titleImage.height);
+	  title.regX = title.width / 2;
+	  title.x = 200;
+	  title.y = 200;
+	
+	  // let startButton = new createjs.Shape();
+	  // let startButtonImage = loader.getResult("startbutton");
+	  // startButton.graphics.beginBitmapFill(startButtonImage).
+	  //   drawRect(0, 0, startButtonImage.width, startButtonImage.height);
+	  // startButton.regX = startButtonImage.width / 2;
+	  // startButton.x = 390;
+	  // startButton.y = 400;
+	
+	  stage.addChild(background, title);
+	  stage.update();
+	};
+	
 	function init() {
 	  const canvas = document.getElementById("ratterCanvas");
 	  stage = new createjs.Stage(canvas);
-	  score = 0;
-	  alive = true;
 	
-	  const manifest = [{ src: "rat.png", id: "rat" }, { src: "background.png", id: "background" }, { src: "truck.png", id: "truck" }, { src: "cab.png", id: "cab" }, { src: "pedestrian.png", id: "pedestrian" }, { src: "numbers.png", id: "numbers" }, { src: "trash.png", id: "trash" }];
+	  const manifest = [{ src: "rat.png", id: "rat" }, { src: "background.png", id: "background" }, { src: "truck.png", id: "truck" }, { src: "cab.png", id: "cab" }, { src: "pedestrian.png", id: "pedestrian" }, { src: "numbers.png", id: "numbers" }, { src: "trash.png", id: "trash" }, { src: "title.png", id: "title" }, { src: "startbutton.png", id: "startbutton" }];
 	
 	  loader = new createjs.LoadQueue(false);
 	  loader.addEventListener("complete", handleComplete);
@@ -277,9 +295,10 @@
 
 	const shuffle = __webpack_require__(2);
 	
-	function addTrucksandCabs({ stage, loader }, count) {
+	function addTrucksandCabs(state, count) {
+	  let { stage, loader } = state;
 	  let truck;
-	  let trucks = [];
+	  state.trucks = [];
 	  let positions = [];
 	
 	  let truckPositions = [];
@@ -311,9 +330,9 @@
 	      truck.velX = 1.5;
 	    }
 	    stage.addChild(truck);
-	    trucks.push(truck);
+	    state.trucks.push(truck);
 	  }
-	  return trucks;
+	  // return trucks;
 	}
 	
 	/////
@@ -420,8 +439,9 @@
 /* 4 */
 /***/ function(module, exports) {
 
-	function addTrashCans({ stage, loader }) {
-	  const trashCans = [];
+	function addTrashCans(state) {
+	  let { stage, loader } = state;
+	  state.trashCans = [];
 	  for (let i = 0; i < 6; ++i) {
 	    const TrashSpriteSheet = new createjs.SpriteSheet({
 	      framerate: 20,
@@ -445,9 +465,9 @@
 	    trash.y = 60;
 	    stage.addChild(trash);
 	
-	    trashCans.push(trash);
+	    state.trashCans.push(trash);
 	  }
-	  return trashCans;
+	  // return trashCans;
 	}
 	
 	module.exports = addTrashCans;
@@ -497,20 +517,20 @@
 	    }
 	  });
 	
-	  let scoreBoard = { ones: {}, tens: {}, hundreds: {}, thousands: {} };
+	  state.scoreBoard = { ones: {}, tens: {}, hundreds: {}, thousands: {} };
 	
-	  scoreBoard.ones = new createjs.Sprite(ScoreSpriteSheet);
-	  scoreBoard.ones.x = 572;
-	  scoreBoard.tens = new createjs.Sprite(ScoreSpriteSheet);
-	  scoreBoard.tens.x = 548;
-	  scoreBoard.hundreds = new createjs.Sprite(ScoreSpriteSheet);
-	  scoreBoard.hundreds.x = 524;
-	  scoreBoard.thousands = new createjs.Sprite(ScoreSpriteSheet);
-	  scoreBoard.thousands.x = 500;
+	  state.scoreBoard.ones = new createjs.Sprite(ScoreSpriteSheet);
+	  state.scoreBoard.ones.x = 572;
+	  state.scoreBoard.tens = new createjs.Sprite(ScoreSpriteSheet);
+	  state.scoreBoard.tens.x = 548;
+	  state.scoreBoard.hundreds = new createjs.Sprite(ScoreSpriteSheet);
+	  state.scoreBoard.hundreds.x = 524;
+	  state.scoreBoard.thousands = new createjs.Sprite(ScoreSpriteSheet);
+	  state.scoreBoard.thousands.x = 500;
 	  // debugger;
-	  stage.addChild(scoreBoard.ones, scoreBoard.tens, scoreBoard.hundreds, scoreBoard.thousands);
+	  stage.addChild(state.scoreBoard.ones, state.scoreBoard.tens, state.scoreBoard.hundreds, state.scoreBoard.thousands);
 	
-	  return scoreBoard;
+	  // return scoreBoard;
 	}
 	
 	module.exports = addScoreBoard;

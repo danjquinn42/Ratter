@@ -2,12 +2,15 @@ body {
   display: block;
   width: 780px;
   margin: 0 auto;
-  background: #323236;
-  /*padding: 200;*/
+  background: #141414;
+  color: #888;
+  font-family: 'Helvetica Neue', Helvetica, sans-serif;
+  letter-spacing: 3px;
 }
 
 #ratterCanvas {
   display: block;
   margin: 0 auto;
-  background-color: grey;
+  background-color: #141414;
+  border: 1px solid #222;
 }
