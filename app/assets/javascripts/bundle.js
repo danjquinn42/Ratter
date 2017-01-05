@@ -233,7 +233,7 @@
 	  }
 	}
 	
-	function startGame() {
+	const startGame = () => {
 	  stage.removeAllChildren();
 	
 	  let width = stage.canvas.width;
@@ -241,7 +241,12 @@
 	  let background = new createjs.Shape();
 	  background.graphics.beginBitmapFill(loader.getResult("background")).drawRect(0, 0, width, height);
 	
-	  stage.addChild(background);
+	  let title = new createjs.Shape();
+	  title.graphics.beginBitmapFill(loader.getResult("smalltitle")).drawRect(0, 0, 144, 33);
+	  title.x = 140;
+	  title.y = 0;
+	
+	  stage.addChild(background, title);
 	
 	  state.score = 0;
 	  state.alive = true;
@@ -257,7 +262,7 @@
 	
 	  createjs.Ticker.timingMode = createjs.Ticker.RAF;
 	  createjs.Ticker.addEventListener("tick", tick);
-	}
+	};
 	
 	const handleComplete = () => {
 	  let title = new createjs.Shape();
@@ -284,13 +289,14 @@
 	  const canvas = document.getElementById("ratterCanvas");
 	  stage = new createjs.Stage(canvas);
 	
-	  const manifest = [{ src: "rat.png", id: "rat" }, { src: "background.png", id: "background" }, { src: "truck.png", id: "truck" }, { src: "cab.png", id: "cab" }, { src: "pedestrian.png", id: "pedestrian" }, { src: "numbers.png", id: "numbers" }, { src: "trash.png", id: "trash" }, { src: "title.png", id: "title" }, { src: "start.png", id: "start" }];
+	  const manifest = [{ src: "rat.png", id: "rat" }, { src: "background.png", id: "background" }, { src: "truck.png", id: "truck" }, { src: "cab.png", id: "cab" }, { src: "pedestrian.png", id: "pedestrian" }, { src: "numbers.png", id: "numbers" }, { src: "trash.png", id: "trash" }, { src: "title.png", id: "title" }, { src: "smalltitle.png", id: "smalltitle" }, { src: "start.png", id: "start" }];
 	
-	  loader = new createjs.LoadQueue(false);
-	  loader.addEventListener("complete", handleComplete);
+	  loader = new createjs.LoadQueue(false, null, true);
+	  loader.addEventListener("complete", startGame);
 	  loader.loadManifest(manifest, true, "./app/assets/images/");
 	
 	  state = { stage: stage, loader: loader };
+	  stage.update();
 	}
 
 /***/ },
@@ -514,7 +520,7 @@
 	  const ScoreSpriteSheet = new createjs.SpriteSheet({
 	    framerate: 20,
 	    "images": [loader.getResult("numbers")],
-	    // "frames": {"regX": 0, "height": 33, "count": 10, "regY": 0, "width": 24},
+	    "frames": { "regX": 0, "height": 33, "count": 10, "regY": 0, "width": 24 },
 	    "animations": {
 	      "0": [0], "1": [1], "2": [2], "3": [3], "4": [4],
 	      "5": [5], "6": [6], "7": [7], "8": [8], "9": [9]
