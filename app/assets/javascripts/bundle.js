@@ -260,14 +260,14 @@
 	}
 	
 	const handleComplete = () => {
-	  const title = new createjs.Shape();
+	  let title = new createjs.Shape();
 	  title.graphics.beginBitmapFill(loader.getResult("title")).drawRect(0, 0, 282, 60);
 	  title.regX = 141;
 	  title.regY = 30;
 	  title.x = 390;
 	  title.y = 200;
 	
-	  const start = new createjs.Shape();
+	  let start = new createjs.Shape();
 	  start.graphics.beginBitmapFill(loader.getResult("start")).drawRect(0, 0, 120, 32);
 	  start.regX = 60;
 	  start.regY = 16;
