@@ -241,7 +241,7 @@
 	  let background = new createjs.Shape();
 	  background.graphics.beginBitmapFill(loader.getResult("background")).drawRect(0, 0, width, height);
 	
-	  stage.addChild(background, title);
+	  stage.addChild(background);
 	
 	  state.score = 0;
 	  state.alive = true;
