@@ -292,7 +292,7 @@
 	  const manifest = [{ src: "rat.png", id: "rat" }, { src: "background.png", id: "background" }, { src: "truck.png", id: "truck" }, { src: "cab.png", id: "cab" }, { src: "pedestrian.png", id: "pedestrian" }, { src: "numbers.png", id: "numbers" }, { src: "trash.png", id: "trash" }, { src: "title.png", id: "title" }, { src: "smalltitle.png", id: "smalltitle" }, { src: "start.png", id: "start" }];
 	
 	  loader = new createjs.LoadQueue(false, null, true);
-	  loader.addEventListener("complete", startGame);
+	  loader.addEventListener("complete", handleComplete);
 	  loader.loadManifest(manifest, true, "./app/assets/images/");
 	
 	  state = { stage: stage, loader: loader };
