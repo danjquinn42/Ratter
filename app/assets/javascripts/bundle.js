@@ -83,6 +83,8 @@
 	      state.rat.gotoAndPlay("left");
 	      if (state.rat.x >= 60) state.rat.x -= 60;
 	      return;
+	    case "Space":
+	      startGame();
 	  }
 	}
 	
@@ -102,10 +104,10 @@
 	    }
 	    adjustScore();
 	  } else {
-	    state.trucks = [];
 	    stage.removeAllChildren();
 	    stage.clear();
-	    init();
+	    state = { stage: stage, loader: loader };
+	    startGame();
 	  }
 	}
 	
@@ -232,12 +234,26 @@
 	}
 	
 	function startGame() {
+	  stage.removeAllChildren();
+	
+	  let title = new createjs.Text("RATTER", "40px 'VT323', monospace", "#d33");
+	  title.regX = title.width / 2;
+	  title.x = 10;
+	  title.y = -5;
+	
+	  let width = stage.canvas.width;
+	  let height = stage.canvas.height;
+	  let background = new createjs.Shape();
+	  background.graphics.beginBitmapFill(loader.getResult("background")).drawRect(0, 0, width, height);
+	
+	  stage.addChild(background, title);
+	
 	  state.score = 0;
 	  state.alive = true;
 	
 	  addRat(state);
 	  addScoreBoard(state);
-	  addTrucksandCabs(state, 10);
+	  addTrucksandCabs(state, 14);
 	  addPedestrians = pedestrianAdder(state);
 	  addPedestrians(5);
 	  addTrashCans(state);
@@ -249,30 +265,24 @@
 	}
 	
 	const handleComplete = () => {
-	  let width = stage.canvas.width;
-	  let height = stage.canvas.height;
-	  let background = new createjs.Shape();
-	  background.graphics.beginBitmapFill(loader.getResult("background")).drawRect(0, 0, width, height);
 	
-	  let title = new createjs.Text("RATTER", "80px 'VT323', monospace", "#bb3333");
-	  // let title = new createjs.Shape();
-	  // let titleImage = loader.getResult("title");
-	  // title.graphics.beginBitmapFill(titleImage).
-	  //   drawRect(0, 0, titleImage.width, titleImage.height);
+	  let title = new createjs.Text("RATTER", "80px 'VT323', monospace", "#d33");
 	  title.regX = title.width / 2;
-	  title.x = 200;
+	  title.x = 290;
 	  title.y = 200;
+	  var graphics = new createjs.Graphics().beginFill("#333").drawRect(0, 0, 306, 65);
+	  let startButton = new createjs.Shape(graphics);
+	  // startButton.drawRect(0, 0, 400, 100);
+	  let start = new createjs.Text("Click To Start", "40px 'VT323', monospace", "#999");
+	  start.regX = start.width / 2;
+	  start.x = 260;
+	  start.y = 300;
+	  startButton.x = 240;
+	  startButton.y = 290;
 	
-	  // let startButton = new createjs.Shape();
-	  // let startButtonImage = loader.getResult("startbutton");
-	  // startButton.graphics.beginBitmapFill(startButtonImage).
-	  //   drawRect(0, 0, startButtonImage.width, startButtonImage.height);
-	  // startButton.regX = startButtonImage.width / 2;
-	  // startButton.x = 390;
-	  // startButton.y = 400;
-	
-	  stage.addChild(background, title);
+	  stage.addChild(title, startButton, start);
 	  stage.update();
+	  stage.addEventListener("click", startGame);
 	};
 	
 	function init() {
