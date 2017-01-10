@@ -271,9 +271,13 @@
 	  title.regY = 30;
 	  title.x = 390;
 	  title.y = 200;
+	  let start_image = loader.getResult("start");
+	  // start_image.crossOrigin = "Anonymous";
+	  // start_image.src = "./app/assets/images/start.png";
+	  // let start_img = new Bitmap(start_image)
 	
 	  let start = new createjs.Shape();
-	  start.graphics.beginBitmapFill(loader.getResult("start")).drawRect(0, 0, 120, 32);
+	  start.graphics.beginBitmapFill(start_image).drawRect(0, 0, 120, 32);
 	  start.regX = 60;
 	  start.regY = 16;
 	  start.x = 390;
@@ -289,7 +293,7 @@
 	  const canvas = document.getElementById("ratterCanvas");
 	  stage = new createjs.Stage(canvas);
 	
-	  const manifest = [{ src: "rat.png", id: "rat" }, { src: "background.png", id: "background" }, { src: "truck.png", id: "truck" }, { src: "cab.png", id: "cab" }, { src: "pedestrian.png", id: "pedestrian" }, { src: "numbers.png", id: "numbers" }, { src: "trash.png", id: "trash" }, { src: "title.png", id: "title" }, { src: "smalltitle.png", id: "smallTitle" }, { src: "start.png", id: "start" }];
+	  const manifest = [{ src: "rat.png", id: "rat" }, { src: "background.png", id: "background" }, { src: "truck.png", id: "truck" }, { src: "cab.png", id: "cab" }, { src: "pedestrian.png", id: "pedestrian" }, { src: "numbers.png", id: "numbers" }, { src: "trash.png", id: "trash" }, { src: "title.png", id: "title" }, { src: "smalltitle.png", id: "smalltitle" }, { src: "start.png", id: "start" }];
 	
 	  loader = new createjs.LoadQueue(false, null, true);
 	  loader.addEventListener("complete", handleComplete);
