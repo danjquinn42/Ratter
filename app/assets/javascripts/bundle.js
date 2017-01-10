@@ -138,7 +138,7 @@
 	  trashBonus.y = 200;
 	  stage.addChild(trashBonus);
 	  stage.update();
-	  pause(1.5);
+	  pause(1);
 	  stage.removeChild(trashBonus);
 	}
 	
