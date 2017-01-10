@@ -242,7 +242,7 @@
 	  background.graphics.beginBitmapFill(loader.getResult("background")).drawRect(0, 0, width, height);
 	
 	  let title = new createjs.Shape();
-	  title.graphics.beginBitmapFill(loader.getResult("smalltitle")).drawRect(0, 0, 144, 33);
+	  title.graphics.beginBitmapFill(loader.getResult("smallTitle")).drawRect(0, 0, 144, 33);
 	  title.x = 140;
 	  title.y = 0;
 	
@@ -293,7 +293,7 @@
 	  const canvas = document.getElementById("ratterCanvas");
 	  stage = new createjs.Stage(canvas);
 	
-	  const manifest = [{ src: "rat.png", id: "rat" }, { src: "background.png", id: "background" }, { src: "truck.png", id: "truck" }, { src: "cab.png", id: "cab" }, { src: "pedestrian.png", id: "pedestrian" }, { src: "numbers.png", id: "numbers" }, { src: "trash.png", id: "trash" }, { src: "title.png", id: "title" }, { src: "smalltitle.png", id: "smalltitle" }, { src: "start.png", id: "start" }];
+	  const manifest = [{ src: "rat.png", id: "rat" }, { src: "background.png", id: "background" }, { src: "truck.png", id: "truck" }, { src: "cab.png", id: "cab" }, { src: "pedestrian.png", id: "pedestrian" }, { src: "numbers.png", id: "numbers" }, { src: "trash.png", id: "trash" }, { src: "title.png", id: "title" }, { src: "smallTitle.png", id: "smallTitle" }, { src: "start.png", id: "start" }];
 	
 	  loader = new createjs.LoadQueue(false, null, true);
 	  loader.addEventListener("complete", handleComplete);
