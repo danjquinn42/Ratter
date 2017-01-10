@@ -111,11 +111,23 @@
 	  }
 	}
 	
+	function showTrashBonus() {
+	  let trashBonus = new createjs.Shape();
+	  trashBonus.graphics.beginBitmapFill(loader.getResult("trashbonus")).drawRect(0, 0, 180, 180);
+	  trashBonus.regX = 90;
+	  trashBonus.regY = 90;
+	  trashBonus.x = 390;
+	  trashBonus.y = 200;
+	  stage.addChild(trashBonus);
+	  stage.update();
+	}
+	
 	function ratIsSafe() {
 	  let safe = false;
 	  state.trashCans.forEach(trash => {
 	    if (checkRatCollision(trash)) {
 	      if (trash.currentAnimation === "empty") {
+	        showTrashBonus();
 	        trash.gotoAndStop("full");
 	        safe = true;
 	      }
@@ -293,7 +305,7 @@
 	  const canvas = document.getElementById("ratterCanvas");
 	  stage = new createjs.Stage(canvas);
 	
-	  const manifest = [{ src: "rat.png", id: "rat" }, { src: "background.png", id: "background" }, { src: "truck.png", id: "truck" }, { src: "cab.png", id: "cab" }, { src: "pedestrian.png", id: "pedestrian" }, { src: "numbers.png", id: "numbers" }, { src: "trash.png", id: "trash" }, { src: "title.png", id: "title" }, { src: "smallTitle.png", id: "smallTitle" }, { src: "start.png", id: "start" }];
+	  const manifest = [{ src: "rat.png", id: "rat" }, { src: "background.png", id: "background" }, { src: "truck.png", id: "truck" }, { src: "cab.png", id: "cab" }, { src: "pedestrian.png", id: "pedestrian" }, { src: "numbers.png", id: "numbers" }, { src: "trash.png", id: "trash" }, { src: "title.png", id: "title" }, { src: "smallTitle.png", id: "smallTitle" }, { src: "trashbonus.png", id: "trashbonus" }, { src: "start.png", id: "start" }];
 	
 	  loader = new createjs.LoadQueue(false, null, true);
 	  loader.addEventListener("complete", handleComplete);
