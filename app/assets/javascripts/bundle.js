@@ -55,7 +55,13 @@
 	let addPedestrians;
 	let state;
 	
-	function scurry() {
+	function scurry(event) {
+	  if (!createjs.Ticker.paused) {
+	    _scurry(event);
+	  }
+	}
+	
+	function _scurry(event) {
 	  switch (event.key) {
 	    case "ArrowUp":
 	      event.preventDefault();
@@ -89,8 +95,19 @@
 	}
 	
 	function tick(event) {
+	  if (!event.paused) {
+	    updateStage(event);
+	  }
+	}
+	
+	function displayWinScreen() {}
+	
+	function updateStage(event) {
 	  if (state.alive) {
 	    stage.update(event);
+	    if (state.fullCans === 6) {
+	      displayWinScreen();
+	    }
 	    movePedestrians();
 	    moveTrucks();
 	    if (ratIsSafe()) {
@@ -101,6 +118,7 @@
 	      });
 	      state.rat.x = 300;
 	      state.rat.y = 540;
+	      showTrashBonus();
 	    }
 	    adjustScore();
 	  } else {
@@ -113,13 +131,25 @@
 	
 	function showTrashBonus() {
 	  let trashBonus = new createjs.Shape();
-	  trashBonus.graphics.beginBitmapFill(loader.getResult("trashbonus")).drawRect(0, 0, 180, 180);
-	  trashBonus.regX = 90;
-	  trashBonus.regY = 90;
+	  trashBonus.graphics.beginBitmapFill(loader.getResult("trashbonus")).drawRect(0, 0, 108, 108);
+	  trashBonus.regX = 54;
+	  trashBonus.regY = 54;
 	  trashBonus.x = 390;
 	  trashBonus.y = 200;
 	  stage.addChild(trashBonus);
 	  stage.update();
+	  pause(1.5);
+	  stage.removeChild(trashBonus);
+	}
+	
+	function resume() {
+	  createjs.Ticker.paused = false;
+	}
+	
+	function pause(seconds) {
+	  let milliseconds = seconds * 1000;
+	  createjs.Ticker.paused = true;
+	  window.setTimeout(resume, milliseconds);
 	}
 	
 	function ratIsSafe() {
@@ -127,8 +157,8 @@
 	  state.trashCans.forEach(trash => {
 	    if (checkRatCollision(trash)) {
 	      if (trash.currentAnimation === "empty") {
-	        showTrashBonus();
 	        trash.gotoAndStop("full");
+	        state.fullCans += 1;
 	        safe = true;
 	      }
 	    }
@@ -284,9 +314,8 @@
 	  title.x = 390;
 	  title.y = 200;
 	  let start_image = loader.getResult("start");
-	  // start_image.crossOrigin = "Anonymous";
-	  // start_image.src = "./app/assets/images/start.png";
-	  // let start_img = new Bitmap(start_image)
+	
+	  state.fullCans = 0;
 	
 	  let start = new createjs.Shape();
 	  start.graphics.beginBitmapFill(start_image).drawRect(0, 0, 120, 32);
