@@ -1,11 +1,32 @@
+body, h1, h2, h3, h4, canvas, a, p,
+article, section, main {
+  margin: 0;
+  padding: 0;
+  border: none;
+  color: inherit;
+  font: inherit;
+
+  /*background: transparent;*/
+  text-decoration: none;
+
+  letter-spacing: inherit;
+
+  display: block;
+
+}
+
 body {
   display: block;
   width: 780px;
   margin: 0 auto;
   background: #141414;
   color: #888;
-  font-family: 'Helvetica Neue', Helvetica, sans-serif;
-  letter-spacing: 3px;
+  font-family: 'Space Mono', monospace;
+  letter-spacing: 0.1em;
+}
+
+header {
+  display: flex;
 }
 
 #ratterCanvas {
@@ -14,3 +35,88 @@ body {
   background-color: #141414;
   border: 1px solid #222;
 }
+
+#by-line {
+  font-size: 24px;
+  display: inline-block;
+  padding: 10px 0;
+}
+
+#menu-icon {
+  width: 12px;
+  height: 12px;
+  box-sizing: border-box;
+  display: inline-block;
+  border-top: 10px solid #888;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+}
+
+#by-line:hover > #menu-icon, #menu-icon:hover{
+  border-top: 10px solid #ddd;
+}
+
+nav{
+  display: none;
+}
+
+#by-line:hover {
+  color: #ddd;
+  cursor: pointer;
+}
+
+#by-line:hover + nav, nav:hover {
+  background-color: #ccc;
+  color: #141414;
+  display: block;
+  position: absolute;
+  top: 52px;
+  cursor: pointer;
+}
+
+nav > a {
+  padding: 10px 20px;
+  width: 192px;
+
+}
+
+nav > a:hover {
+  background-color: #eee;
+  color: #141414;
+  display: block;
+}
+
+#instructions-header {
+  display: flex;
+  font-size: 23px;
+  /*color: #141414;
+  background-color: #888;
+  border-radius: 50%;
+  padding: 0px 6px 0 9px;*/
+  font-size: 28px;
+  font-weight: bold;
+  margin-left: auto;
+  /*margin-right: 0;*/
+  margin: 5px 0 10px auto;
+}
+
+#instructions {
+  display: none;
+  text-align: right;
+  list-style: none;
+  background: #ddd;
+  color: #333;
+  padding: 10px 20px 30px 20px;
+  position: relative;
+  top: 38px;
+  left: auto;
+}
+
+#instructions-header:hover + #instructions, #instructions:hover {
+  display: block;
+}
+
+/*nav:hover {
+  display: block;
+  position: absolute;
+}*/

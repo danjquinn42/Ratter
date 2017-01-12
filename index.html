@@ -10,15 +10,40 @@
     <script
       src="./app/assets/javascripts/bundle.js">
     </script>
-    <style>
-@import url('https://fonts.googleapis.com/css?family=VT323');
-</style>
+    <link href="https://fonts.googleapis.com/css?family=Space+Mono" rel="stylesheet">
     <link href="./app/assets/stylesheets/index.css" rel="stylesheet" type="text/css">
     <title>Ratter</title>
   </head>
   <body>
+    <header>
+    <h1 id="by-line">by <strong>Dan Quinn</strong>
+      <div id="menu-icon"></div>
+    </h1>
+      <nav>
+        <a href="https://danjquinn42.github.io/danquinn/">
+          Website
+        </a>
+        <a href="https://github.com/danjquinn42">
+          GitHub
+        </a>
+        <a href="https://www.linkedin.com/in/daniel-quinn-11916775">
+          LinkedIn
+        </a>
+      </nav>
+      <div id="instructions-header">
+        <h1>?</h1>
+      </div>
+      <ul id="instructions">
+        <li>click start to begin.</li>
+        <li>move with the arrow keys.</li>
+        <li>avoid cars.</li>
+        <li>avoid pedestrians.</li>
+        <li>get a rat in each trash can to win.</li>
+        <li>you only have one life.</li>
+        <li>good luck.</li>
+      </ul>
+
+    </header>
     <canvas id="ratterCanvas" width="780" height="600"></canvas>
-    <br>
-    <p>By: Dan Quinn<p>
   </body>
 </html>

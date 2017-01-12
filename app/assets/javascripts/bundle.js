@@ -124,9 +124,36 @@
 	  } else {
 	    stage.removeAllChildren();
 	    stage.clear();
+	    showFinalScore();
 	    state = { stage: stage, loader: loader };
 	    startGame();
 	  }
+	}
+	
+	function showFinalScore() {
+	  addScoreBoard(state);
+	  adjustScore();
+	  showGameOver();
+	  state.scoreBoard.ones.x -= 155;
+	  state.scoreBoard.ones.y += 230;
+	  state.scoreBoard.tens.x -= 155;
+	  state.scoreBoard.tens.y += 230;
+	  state.scoreBoard.hundreds.x -= 155;
+	  state.scoreBoard.hundreds.y += 230;
+	  state.scoreBoard.thousands.x -= 155;
+	  state.scoreBoard.thousands.y += 230;
+	  stage.update();
+	  pause(2);
+	}
+	
+	function showGameOver() {
+	  let gameOver = new createjs.Shape();
+	  gameOver.graphics.beginBitmapFill(loader.getResult("gameover")).drawRect(0, 0, 218, 33);
+	  gameOver.regX = 109;
+	  gameOver.regY = 16;
+	  gameOver.x = 390;
+	  gameOver.y = 200;
+	  stage.addChild(gameOver);
 	}
 	
 	function showTrashBonus() {
@@ -334,7 +361,7 @@
 	  const canvas = document.getElementById("ratterCanvas");
 	  stage = new createjs.Stage(canvas);
 	
-	  const manifest = [{ src: "rat.png", id: "rat" }, { src: "background.png", id: "background" }, { src: "truck.png", id: "truck" }, { src: "cab.png", id: "cab" }, { src: "pedestrian.png", id: "pedestrian" }, { src: "numbers.png", id: "numbers" }, { src: "trash.png", id: "trash" }, { src: "title.png", id: "title" }, { src: "smallTitle.png", id: "smallTitle" }, { src: "trashbonus.png", id: "trashbonus" }, { src: "start.png", id: "start" }];
+	  const manifest = [{ src: "rat.png", id: "rat" }, { src: "background.png", id: "background" }, { src: "truck.png", id: "truck" }, { src: "cab.png", id: "cab" }, { src: "pedestrian.png", id: "pedestrian" }, { src: "numbers.png", id: "numbers" }, { src: "trash.png", id: "trash" }, { src: "title.png", id: "title" }, { src: "smallTitle.png", id: "smallTitle" }, { src: "trashbonus.png", id: "trashbonus" }, { src: "gameover.png", id: "gameover" }, { src: "start.png", id: "start" }];
 	
 	  loader = new createjs.LoadQueue(false, null, true);
 	  loader.addEventListener("complete", handleComplete);
@@ -582,10 +609,8 @@
 	  state.scoreBoard.hundreds.x = 524;
 	  state.scoreBoard.thousands = new createjs.Sprite(ScoreSpriteSheet);
 	  state.scoreBoard.thousands.x = 500;
-	  // debugger;
-	  stage.addChild(state.scoreBoard.ones, state.scoreBoard.tens, state.scoreBoard.hundreds, state.scoreBoard.thousands);
 	
-	  // return scoreBoard;
+	  stage.addChild(state.scoreBoard.ones, state.scoreBoard.tens, state.scoreBoard.hundreds, state.scoreBoard.thousands);
 	}
 	
 	module.exports = addScoreBoard;
