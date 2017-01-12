@@ -35,7 +35,7 @@ This project will be implemented with the following technologies:
 
 In addition to the webpack entry file, the following files will be involved in the project:
 
-`sprites.png`: the sprite file will include pixle art of the street, the sidewalk, dumpsters, the rat facing four directions, angry New Yorkers with multiple frames for walking, busses, and cars.
+`sprites.png`: the sprite file will include pixel art of the street, the sidewalk, dumpsters, the rat facing four directions, angry New Yorkers with multiple frames for walking, busses, and cars.
 
 `street.js`: this script will handle the logic for creating and updating the necessary `Easel.js` elements and rendering them to the DOM.
 

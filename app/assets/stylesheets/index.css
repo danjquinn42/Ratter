@@ -89,14 +89,10 @@ nav > a:hover {
 #instructions-header {
   display: flex;
   font-size: 23px;
-  /*color: #141414;
-  background-color: #888;
-  border-radius: 50%;
-  padding: 0px 6px 0 9px;*/
+  position: relative;
   font-size: 28px;
   font-weight: bold;
   margin-left: auto;
-  /*margin-right: 0;*/
   margin: 5px 0 10px auto;
 }
 
@@ -107,16 +103,16 @@ nav > a:hover {
   background: #ddd;
   color: #333;
   padding: 10px 20px 30px 20px;
-  position: relative;
+  position: absolute;
   top: 38px;
-  left: auto;
+  margin-left: 345px;
+  float: left;
+}
+
+#instructions-header:hover {
+  cursor: pointer;
 }
 
 #instructions-header:hover + #instructions, #instructions:hover {
   display: block;
 }
-
-/*nav:hover {
-  display: block;
-  position: absolute;
-}*/
