@@ -20,8 +20,9 @@ The game is written using:
 - `Easel.js` with `HTML5 Canvas` for DOM manipulation and rendering
 - Webpack to bundle and serve up the various scripts
 
-In addition to the webpack entry file the game relies on a small library of sprites and other graphics. For example this is the Rat sprite sheet.
-![rat sprite sheet](/app/assets/images/rat.png "Rat Sprite Sheet")
+In addition to the webpack entry file the game relies on a small library of sprites and other graphics. For example this is the Rat sprite sheet.  
+![rat sprite sheet](/app/assets/images/rat.png "Rat Sprite Sheet")  
+
 The original Frogger game uses a single sheet for all sprites which improves load speed. Since loading speed has not been an issue for this app I chose to separate sprites by function until speed becomes an issue.
 
 ##Coming Features
