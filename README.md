@@ -5,6 +5,9 @@ A NYC themed homage to my favorite arcade game: frogger.
 ##How to Play
 Use the arrow keys to move. Your goal is to get one rat in each Trash Can. If you it a trash can or a pedestrian you lose the game and a new game will start.
 
+Hover over the question mark in the top right corner to see instructions.
+![play instructions](/app/assets/images/screenshot_instructions.JPG)
+
 Every time you reach a trash can the number of pedestrians and the speed of traffic will increase.
 
 ##Technologies Used
