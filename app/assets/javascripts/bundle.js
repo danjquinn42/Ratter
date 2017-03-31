@@ -108,9 +108,9 @@
 	    moveTrucks();
 	    if (ratIsSafe()) {
 	      state.score += 600;
-	      addPedestrians(0);
+	      addPedestrians(3);
 	      state.trucks.forEach(truck => {
-	        truck.velX *= 1;
+	        truck.velX *= 1.1;
 	      });
 	      state.rat.x = 300;
 	      state.rat.y = 540;
@@ -129,7 +129,6 @@
 	function showFinalScore() {
 	  addScoreBoard(state);
 	  adjustScore();
-	  console.log(state.fullCans);
 	  showEndGameState();
 	  state.scoreBoard.ones.x -= 155;
 	  state.scoreBoard.ones.y += 230;
@@ -334,6 +333,7 @@
 	
 	  state.score = 0;
 	  state.alive = true;
+	  state.fullCans = 0;
 	
 	  addRat(state);
 	  addScoreBoard(state);
