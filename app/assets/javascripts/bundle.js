@@ -164,10 +164,10 @@
 	function showWinScreen() {
 	  let win = new createjs.Shape();
 	  win.graphics.beginBitmapFill(loader.getResult("win")).drawRect(0, 0, 218, 33);
-	  gameOver.regX = 109;
-	  gameOver.regY = 16;
-	  gameOver.x = 390;
-	  gameOver.y = 200;
+	  win.regX = 109;
+	  win.regY = 16;
+	  win.x = 390;
+	  win.y = 200;
 	  stage.addChild(win);
 	}
 	
