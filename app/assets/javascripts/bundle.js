@@ -54,6 +54,7 @@
 	let stage, loader;
 	let addPedestrians;
 	let state;
+	let win = false;
 	
 	function scurry(event) {
 	  if (!createjs.Ticker.paused) {
@@ -100,21 +101,16 @@
 	  }
 	}
 	
-	function displayWinScreen() {}
-	
 	function updateStage(event) {
-	  if (state.alive) {
+	  if (state.alive && win === false) {
 	    stage.update(event);
-	    if (state.fullCans === 6) {
-	      displayWinScreen();
-	    }
 	    movePedestrians();
 	    moveTrucks();
 	    if (ratIsSafe()) {
 	      state.score += 600;
-	      addPedestrians(3);
+	      addPedestrians(0);
 	      state.trucks.forEach(truck => {
-	        truck.velX *= 1.1;
+	        truck.velX *= 1;
 	      });
 	      state.rat.x = 300;
 	      state.rat.y = 540;
@@ -133,7 +129,7 @@
 	function showFinalScore() {
 	  addScoreBoard(state);
 	  adjustScore();
-	  showGameOver();
+	  showEndGameState();
 	  state.scoreBoard.ones.x -= 155;
 	  state.scoreBoard.ones.y += 230;
 	  state.scoreBoard.tens.x -= 155;
@@ -146,6 +142,14 @@
 	  pause(2);
 	}
 	
+	function showEndGameState() {
+	  if (state.fullCans === 6) {
+	    showWinScreen();
+	  } else {
+	    showGameOver();
+	  }
+	}
+	
 	function showGameOver() {
 	  let gameOver = new createjs.Shape();
 	  gameOver.graphics.beginBitmapFill(loader.getResult("gameover")).drawRect(0, 0, 218, 33);
@@ -154,6 +158,16 @@
 	  gameOver.x = 390;
 	  gameOver.y = 200;
 	  stage.addChild(gameOver);
+	}
+	
+	function showWinScreen() {
+	  let win = new createjs.Shape();
+	  gameOver.graphics.beginBitmapFill(loader.getResult("win")).drawRect(0, 0, 218, 33);
+	  gameOver.regX = 109;
+	  gameOver.regY = 16;
+	  gameOver.x = 390;
+	  gameOver.y = 200;
+	  stage.addChild(win);
 	}
 	
 	function showTrashBonus() {
@@ -361,7 +375,7 @@
 	  const canvas = document.getElementById("ratterCanvas");
 	  stage = new createjs.Stage(canvas);
 	
-	  const manifest = [{ src: "rat.png", id: "rat" }, { src: "background.png", id: "background" }, { src: "truck.png", id: "truck" }, { src: "cab.png", id: "cab" }, { src: "pedestrian.png", id: "pedestrian" }, { src: "numbers.png", id: "numbers" }, { src: "trash.png", id: "trash" }, { src: "title.png", id: "title" }, { src: "smallTitle.png", id: "smallTitle" }, { src: "trashbonus.png", id: "trashbonus" }, { src: "gameover.png", id: "gameover" }, { src: "start.png", id: "start" }];
+	  const manifest = [{ src: "rat.png", id: "rat" }, { src: "background.png", id: "background" }, { src: "truck.png", id: "truck" }, { src: "cab.png", id: "cab" }, { src: "pedestrian.png", id: "pedestrian" }, { src: "numbers.png", id: "numbers" }, { src: "trash.png", id: "trash" }, { src: "title.png", id: "title" }, { src: "smallTitle.png", id: "smallTitle" }, { src: "trashbonus.png", id: "trashbonus" }, { src: "gameover.png", id: "gameover" }, { src: "win.png", id: "win" }, { src: "start.png", id: "start" }];
 	
 	  loader = new createjs.LoadQueue(false, null, true);
 	  loader.addEventListener("complete", handleComplete);
