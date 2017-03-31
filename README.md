@@ -22,7 +22,7 @@ The game is written using:
 
 In addition to the webpack entry file the game relies on a small library of sprites and other graphics. For example this is the Rat sprite sheet.  
 ![rat sprite sheet](/app/assets/images/rat.png "Rat Sprite Sheet")  
-
+gi
 The original Frogger game uses a single sheet for all sprites which improves load speed. Since loading speed has not been an issue for this app I chose to separate sprites by function until speed becomes an issue.
 
 ##Coming Features
