@@ -129,6 +129,7 @@
 	function showFinalScore() {
 	  addScoreBoard(state);
 	  adjustScore();
+	  console.log(state.fullCans);
 	  showEndGameState();
 	  state.scoreBoard.ones.x -= 155;
 	  state.scoreBoard.ones.y += 230;
