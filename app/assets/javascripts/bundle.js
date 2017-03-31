@@ -102,7 +102,7 @@
 	}
 	
 	function updateStage(event) {
-	  if (state.alive && win === false) {
+	  if (state.alive && state.fullCans < 6) {
 	    stage.update(event);
 	    movePedestrians();
 	    moveTrucks();
