@@ -402,10 +402,7 @@
 	
 	  for (let i = 0; i < 8; ++i) {
 	    let xpos = i * 110;
-	    truckPositions.push([xpos, 310]);
-	    truckPositions.push([xpos, 370]);
-	    truckPositions.push([xpos, 436]);
-	    truckPositions.push([xpos, 496]);
+	    truckPositions.push([xpos, 310], [xpos, 370], [xpos, 436], [xpos, 496]);
 	  }
 	
 	  shuffle(truckPositions);
