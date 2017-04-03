@@ -429,10 +429,8 @@
 	    stage.addChild(truck);
 	    state.trucks.push(truck);
 	  }
-	  // return trucks;
 	}
 	
-	/////
 	function randomLane(truck) {
 	  return coinToss() === 0 ? truck.y : truck.y + 60;
 	}
@@ -475,7 +473,6 @@
 	
 	let PedestrianSpriteSheet;
 	const positions = [];
-	// let pedestrians = [];
 	let pedestrian;
 	
 	function pedestrianAdder(state) {
@@ -564,7 +561,6 @@
 	
 	    state.trashCans.push(trash);
 	  }
-	  // return trashCans;
 	}
 	
 	module.exports = addTrashCans;
