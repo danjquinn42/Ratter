@@ -441,7 +441,7 @@
 	}
 	
 	function randomVehicle(loader) {
-	  return coinToss() === 0 ? loader.getResult("cab") : loader.getResult("truck"); //TODO make truck
+	  return coinToss() === 0 ? loader.getResult("cab") : loader.getResult("truck");
 	}
 	
 	function coinToss() {
