@@ -401,10 +401,11 @@
 	  let truckPositions = [];
 	
 	  for (let i = 0; i < 8; ++i) {
-	    truckPositions.push([i * 110, 310]);
-	    truckPositions.push([i * 110, 370]);
-	    truckPositions.push([i * 110, 436]);
-	    truckPositions.push([i * 110, 496]);
+	    let xpos = i * 110;
+	    truckPositions.push([xpos, 310]);
+	    truckPositions.push([xpos, 370]);
+	    truckPositions.push([xpos, 436]);
+	    truckPositions.push([xpos, 496]);
 	  }
 	
 	  shuffle(truckPositions);
